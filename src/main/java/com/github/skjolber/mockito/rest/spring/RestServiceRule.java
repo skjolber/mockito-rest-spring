@@ -9,9 +9,9 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
- * Rule for mocking remoting endpoints. <br/>
- * <br/>
- * Intended for use when testing remoting clients.
+ * Rule for mocking remoting endpoints. <br>
+ * <br>
+ * Intended for use when testing service clients.
  *
  */
 
@@ -38,16 +38,14 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
 
 	private List<Server> servers = new ArrayList<Server>();
 
-    /**
-     * Create (and start) service endpoint with mock delegate. 
-     * 
-     * @param port
-     *            service class
-     * @param address
-     *            address, i.e. http://localhost:1234
-     * @return mockito mock - the mock to which server calls are delegated
-     * @throws Exception
-     */
+	/**
+	 * Create (and start) service endpoint with mock delegates. 
+	 * 
+	 * @param serviceInterfaces a list of desired service mocks
+	 * @param address base address, i.e. http://localhost:1234
+	 * @return map of mocks
+	 * @throws Exception
+	 */
 
     public Map<Class<?>, Object> mock(List<Class<?>> serviceInterfaces, String address) throws Exception {
         // wrap the evaluator mock in proxy

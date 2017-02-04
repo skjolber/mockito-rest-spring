@@ -1,11 +1,50 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.skjolber</groupId>
 	<artifactId>mockito-spring-rest</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>mockito-spring-rest</name>
 	<description>REST web-service mocking utility for Spring</description>
 	<url>https://github.com/skjolber/mockito-rest-spring</url>
+	<packaging>jar</packaging>	
+	
+	<organization>
+		<name>Media Skjolberg</name>
+		<url>http://skjolber.github.io</url>
+	</organization>	
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Thomas Skjølberg</name>
+			<email>thomas.skjolberg@gmail.com</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git@github.com:skjolber/mockito-rest-spring.git</connection>
+		<developerConnection>scm:git:git@github.com:skjolber/mockito-rest-spring.git</developerConnection>
+		<url>git@github.com:skjolber/mockito-rest-spring.git</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/skjolber/mockito-rest-spring/issues</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://travis-ci.org/skjolber/indent</url>
+	</ciManagement>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -22,38 +61,13 @@
 		<logback.version>1.1.3</logback.version>
 		<slf4j.version>1.7.12</slf4j.version>
 		<build-helper-maven-plugin.version>1.9.1</build-helper-maven-plugin.version>
-		
+
 		<jetty.version>9.2.19.v20160908</jetty.version>
-	    <jackson.version>2.8.5</jackson.version>
-	    <jackson.asl.version>1.9.13</jackson.asl.version>
+		<jackson.version>2.8.5</jackson.version>
+		<jackson.asl.version>1.9.13</jackson.asl.version>
+
+		<maven.jacoco.plugin.version>0.7.8</maven.jacoco.plugin.version>
 	</properties>
-
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
-	<scm>
-		<connection>scm:git:git@github.com:skjolber/mockito-rest-spring.git</connection>
-		<developerConnection>scm:git:git@github.com:skjolber/mockito-rest-spring.git</developerConnection>
-		<url>git@github.com:skjolber/mockito-rest-spring.git</url>
-		<tag>HEAD</tag>
-	</scm>
-
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/skjolber/mockito-rest-spring/issues</url>
-	</issueManagement>
-
-	<developers>
-		<developer>
-			<name>Thomas Skjølberg</name>
-			<email>thomas.skjolberg@gmail.com</email>
-		</developer>
-	</developers>
 
 	<dependencies>
 		<dependency>
@@ -68,7 +82,7 @@
 			<version>${mockito.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -85,16 +99,16 @@
 			<artifactId>spring-beans</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
 			<version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
-        </dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -102,26 +116,26 @@
 			<scope>test</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>${jackson.asl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${jackson.asl.version}</version>
-        </dependency>
 		<dependency>
-		    <groupId>org.eclipse.jetty</groupId>
-		    <artifactId>jetty-annotations</artifactId>
-		    <version>${jetty.version}</version>
-		</dependency>                
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>${jackson.asl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson.asl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-annotations</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
 		<!-- logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -150,9 +164,9 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
-		    <groupId>commons-io</groupId>
-		    <artifactId>commons-io</artifactId>
-		    <version>${commons.io.version}</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons.io.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -166,11 +180,10 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 			</plugin>
-			
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.7.201606060606</version>
+				<version>${maven.jacoco.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>default-prepare-agent</id>
@@ -230,7 +243,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -243,7 +256,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
+				<version>2.10.4</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -271,12 +284,18 @@
 		<profile>
 			<!-- mvn -P release release:perform -->
 			<id>release</id>
+			<properties>
+				<!-- this is useful when the desired key is not the default (first) export 
+					GPG_KEY_NAME=ABCDEF01 -->
+				<gpg.executable>gpg</gpg.executable>
+				<gpg.keyname>${env.GPG_KEY_NAME}</gpg.keyname>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
+						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -292,7 +311,6 @@
 		</profile>
 	</profiles>
 
-
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -303,6 +321,5 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-
 
 </project>

@@ -28,7 +28,7 @@ import org.springframework.web.client.RestTemplate;
  * 
  */
 
-public class RestServiceRuleTest1 {
+public class RestServiceRule1Test {
 
 	private static String baseUrl = "http://localhost:9999/context";
 	
