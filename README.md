@@ -126,7 +126,7 @@ Also, these alternatives do not require the web-service bean being available.
 [Apache 2.0]:          	http://www.apache.org/licenses/LICENSE-2.0.html
 [issue-tracker]:       	https://github.com/skjolber/mockito-rest-spring/issues
 [Maven]:                http://maven.apache.org/
-[1.0.0]:		https://github.com/skjolber/mockito-rest-spring/releases/tag/mockito-rest-spring-1.0.0
+[1.0.0]:				https://github.com/skjolber/mockito-rest-spring/releases/tag/mockito-spring-rest-1.0.0
 [WireMock]:             http://wiremock.org/
 [Spring Mock MVC]:      http://docs.spring.io/spring-security/site/docs/current/reference/html/test-mockmvc.html
 
