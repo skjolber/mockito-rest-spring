@@ -35,7 +35,7 @@ Example dependency config:
 ```
 
 # Usage
-If you prefer skipping to a full example, see [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRuleTest1.java). 
+If you prefer skipping to a full example, see [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRule1Test.java). 
 
 # Basics
 In your JUnit test, create a `RestServiceRule`
