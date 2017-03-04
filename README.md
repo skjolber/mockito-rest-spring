@@ -50,7 +50,7 @@ and mock service endpoints by using
 MyRestService serviceMock = rule.mock(MyRestService.class, "http://localhost:12345/base/path"); 
 ```
 
-where the MyRestService is either an interface or a concrete controller implementation. For a custom (or missing) path use
+where the MyRestService is either an interface or a concrete `@RestController` implementation. For a custom (or missing) class level [RequestMapping] use
 
 ```java
 MyRestService serviceMock = rule.mock(MyRestService.class, "http://localhost:12345/base/path", "/myService"); 
@@ -127,7 +127,7 @@ Also, these alternatives do not require the bean/interface being available.
 
 # History
 
- - [1.0.1]: Support for API interfaces, including Swagger-generated stubs. See [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRule1Test.java).
+ - [1.0.1]: Support for API interfaces, including Swagger-generated stubs. See [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRuleInterfaceTest.java).
  - [1.0.0]: Initial version
 
 [Apache 2.0]:          	http://www.apache.org/licenses/LICENSE-2.0.html
@@ -138,4 +138,4 @@ Also, these alternatives do not require the bean/interface being available.
 [Spring Mock MVC]:      http://docs.spring.io/spring-security/site/docs/current/reference/html/test-mockmvc.html
 [Swagger]:				https://github.com/swagger-api/swagger-codegen
 [Mockito]:				https://github.com/mockito/mockito
-
+[RequestMapping]:		https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/RequestMapping.html
