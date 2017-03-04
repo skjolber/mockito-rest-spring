@@ -20,7 +20,7 @@ Bugs, feature suggestions and help requests can be filed with the [issue-tracker
 [Apache 2.0]
 
 # Obtain
-The project is based on [Maven] and is pending release to central Maven repository.
+The project is based on [Maven] and is available on central Maven repository.
 
 Example dependency config:
 
@@ -127,7 +127,7 @@ Also, these alternatives do not require the bean/interface being available.
 
 # History
 
- - [1.0.1]: Support for API interfaces, including Swagger-generated stubs. See [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRuleInterfaceTest.java).
+ - [1.0.1]: Support for API interfaces, including [Swagger]-generated stubs. See [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRuleInterfaceTest.java).
  - 1.0.0: Initial version
 
 [Apache 2.0]:          	http://www.apache.org/licenses/LICENSE-2.0.html

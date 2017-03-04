@@ -67,7 +67,7 @@ public class RestServiceRuleInterfaceTest {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON); // avoid 415, this can probably be in a future version of swagger-codegen
+		headers.setContentType(MediaType.APPLICATION_JSON); // avoid 415, this can probably be skipped in a future version of swagger-codegen
 		
 		ResponseEntity<Pet> responseEntity = restTemplate.exchange(u1.toURI(), HttpMethod.GET, new HttpEntity<>(headers), Pet.class);
 		
