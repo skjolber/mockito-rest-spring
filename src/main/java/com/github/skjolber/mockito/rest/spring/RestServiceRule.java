@@ -7,6 +7,12 @@ import java.util.Map;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
+
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.description.annotation.AnnotationDescription;
+import net.bytebuddy.dynamic.DynamicType.Loaded;
 
 /**
  * Rule for mocking remoting endpoints. <br>
@@ -17,23 +23,88 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class RestServiceRule extends org.junit.rules.ExternalResource {
 
+    public static <T> Class<T> asService(Class<T> serviceInterface) throws Exception {
+    	return asService(serviceInterface, null);
+    }
+
+    public static <T> Class<T> asService(Class<T> serviceInterface, String path) throws Exception {
+    	
+    	net.bytebuddy.dynamic.DynamicType.Builder<T> subclass = new ByteBuddy().subclass(serviceInterface);
+    	
+    	if(!serviceInterface.isAnnotationPresent(RestController.class) && !serviceInterface.isAnnotationPresent(Controller.class)) {
+    		subclass = subclass.annotateType(AnnotationDescription.Builder.ofType(RestController.class).build());
+    	}
+    	if(path != null) {
+	   		subclass = subclass.annotateType(AnnotationDescription.Builder.ofType(org.springframework.web.bind.annotation.RequestMapping.class).defineArray("path", new String[]{path}).build());
+    	}
+    	
+   		Loaded<T> load = subclass.make().load(serviceInterface.getClassLoader());
+
+   		return (Class<T>) load.getLoaded();
+    }
+
+	public class Builder {
+		
+		public Builder(String address) {
+			this.address = address;
+		}
+
+		private String address;
+		
+		private List<Class<?>> beans = new ArrayList<>();
+		
+		private List<Class<?>> contextBeans = new ArrayList<>(RestServiceRule.this.defaultContextBeans);
+		
+		public <T> T mock() throws Exception {
+			if(beans.isEmpty()) {
+				throw new IllegalArgumentException("No beans added");
+			}
+			
+			if(beans.size() == 1) {
+				return (T) RestServiceRule.this.mock(beans.get(0), address);
+			} else {
+				return (T) RestServiceRule.this.mock(beans, address);
+			}
+		}
+		
+		public Builder service(Class<?> serviceClass) throws Exception {
+			return service(serviceClass, null);
+		}
+
+		public Builder service(Class<?> serviceInterface, String path) throws Exception {
+			if(path != null || serviceInterface.isInterface()) {
+				beans.add(RestServiceRule.asService(serviceInterface, path));
+			} else {
+				beans.add(serviceInterface);
+			}
+			return this;
+		}
+
+		public Builder context(Class<?> context) {
+			contextBeans.add(context);
+			
+			return this;
+		}
+
+	}
+	
     public static RestServiceRule newInstance() {
         return new RestServiceRule();
     }
 
-    public static RestServiceRule newInstance(List<Class<?>> beans) {
+	public static RestServiceRule newInstance(List<Class<?>> beans) {
         return new RestServiceRule(beans);
     }
     
     /** beans added to the sprin context */
-    private List<Class<?>> contextBeans;
+    private List<Class<?>> defaultContextBeans;
     
     public RestServiceRule() {
     	this(Arrays.<Class<?>>asList(DefaultSpringWebMvcConfig.class));
 	}
     
-    public RestServiceRule(List<Class<?>> beans) {
-    	this.contextBeans = beans;
+    public RestServiceRule(List<Class<?>> contextBeans) {
+    	this.defaultContextBeans = contextBeans;
 	}
 
 	private List<Server> servers = new ArrayList<Server>();
@@ -46,8 +117,11 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
 	 * @return map of mocks
 	 * @throws Exception
 	 */
-
     public Map<Class<?>, Object> mock(List<Class<?>> serviceInterfaces, String address) throws Exception {
+    	return mock(serviceInterfaces, defaultContextBeans, address);
+    }
+
+    public Map<Class<?>, Object> mock(List<Class<?>> serviceInterfaces, List<Class<?>> contextBeans, String address) throws Exception {
         // wrap the evaluator mock in proxy
         URL url = new URL(address);
         if (!url.getHost().equals("localhost") && !url.getHost().equals("127.0.0.1")) {
@@ -64,19 +138,29 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     	Server server = new Server(url.getPort());
         server.setHandler(webAppContext);
 
-        server.start();
-    	
         servers.add(server);
-        
+
+       	server.start();
+
         return configuration.getAll();
     }
+    
+    public <T> T mock(Class<T> serviceInterface, String baseAddress) throws Exception {
+    	return mock(serviceInterface, defaultContextBeans, baseAddress, null);
+    }
+    
+    public <T> T mock(Class<T> serviceInterface, String baseAddress, String path) throws Exception {
+    	return mock(serviceInterface, defaultContextBeans, baseAddress, path);
+    }
 
-	
-    public <T> T mock(Class<T> serviceInterface, String address) throws Exception {
-    	List<Class<?>> mockTargetBeans = new ArrayList<>();
+    public <T> T mock(Class<T> serviceInterface, List<Class<?>> contextBeans, String baseAddress, String path) throws Exception {
+    	if(path != null || serviceInterface.isInterface()) {
+    		serviceInterface = asService(serviceInterface, path);
+    	}
+     	List<Class<?>> mockTargetBeans = new ArrayList<>();
     	mockTargetBeans.add(serviceInterface);
 
-    	Map<Class<?>, Object> mock = mock(mockTargetBeans, address);
+    	Map<Class<?>, Object> mock = mock(mockTargetBeans, contextBeans, baseAddress);
     	
         return (T) mock.get(serviceInterface);
     }
@@ -134,6 +218,10 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
             endpointImpl.start();
         }
     }
+
+	public Builder builder(String address) {
+		return new Builder(address);
+	}
 
     
 

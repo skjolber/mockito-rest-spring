@@ -55,7 +55,7 @@ public class RestServiceRule1Test {
 		
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.set("MyResponseHeader", "MyValue");
-		ResponseEntity entity = new ResponseEntity<String>(message, responseHeaders, HttpStatus.OK);
+		ResponseEntity<String> entity = new ResponseEntity<String>(message, responseHeaders, HttpStatus.OK);
 		
 		when(serviceMock.method1()).thenReturn(entity);
 		
@@ -146,7 +146,7 @@ public class RestServiceRule1Test {
 		try {
 			ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
 			
-			Assert.fail();
+			Assert.fail("Unexpectedly got '" + responseEntity.getBody() + "'");
 		} catch (HttpStatusCodeException exception) {
 		    int statusCode = exception.getStatusCode().value();
 		    // TODO get error object here

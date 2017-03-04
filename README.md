@@ -9,9 +9,8 @@ Users will benefit from
     * interceptors
   * simple JUnit Rule setup
 
-all with the regular advantages of Mockito. Prerequisites:
-
-  * REST web-service bean (API or implementation) must be on test-classpath
+all with the regular advantages of [Mockito]. The REST API must be available either in the form
+of an annotated interface or a concrete implemenation.
 
 While the primary target is Spring-flavored REST, there is really no constraints on using other implementations. 
 
@@ -48,9 +47,16 @@ public RestServiceRule rule = RestServiceRule.newInstance();
 and mock service endpoints by using
 
 ```java
-MyRestController serviceMock = rule.mock(MyRestController.class, "http://localhost:12345/base/path"); 
+MyRestService serviceMock = rule.mock(MyRestService.class, "http://localhost:12345/base/path"); 
 ```
-The returned `serviceMock` instance is a normal Mockito mock(..) object. 
+
+where the MyRestService is either an interface or a concrete controller implementation. For a custom (or missing) path use
+
+```java
+MyRestService serviceMock = rule.mock(MyRestService.class, "http://localhost:12345/base/path", "/myService"); 
+```
+
+The returned `serviceMock` instance is a normal [Mockito] mock(..) object. 
 
 # Details
 Create mock response via code
@@ -94,11 +100,11 @@ Wrap mock creation using a `@Before` method if you prefer using fields for your 
 @Value("${my.service}")
 private String address;
 
-private MyRestController serviceMock;
+private MyRestService serviceMock;
 
 @Before
 public void mockService() {
-	serviceMock = rule.mock(MyRestController.class, address);
+	serviceMock = rule.mock(MyRestService.class, address);
 }
 ```
 
@@ -117,10 +123,11 @@ While this project offers easy-to-setup testing, alternatives exist which offer 
    * [Spring Mock MVC] - using RestTemplate clients
    * [WireMock]
 
-Also, these alternatives do not require the web-service bean being available.
+Also, these alternatives do not require the bean/interface being available.
 
 # History
 
+ - [1.0.1]: Support for API interfaces, including Swagger-generated stubs. See [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRule1Test.java).
  - [1.0.0]: Initial version
 
 [Apache 2.0]:          	http://www.apache.org/licenses/LICENSE-2.0.html
@@ -129,5 +136,6 @@ Also, these alternatives do not require the web-service bean being available.
 [1.0.0]:				https://github.com/skjolber/mockito-rest-spring/releases/tag/mockito-spring-rest-1.0.0
 [WireMock]:             http://wiremock.org/
 [Spring Mock MVC]:      http://docs.spring.io/spring-security/site/docs/current/reference/html/test-mockmvc.html
-
+[Swagger]:				https://github.com/swagger-api/swagger-codegen
+[Mockito]:				https://github.com/mockito/mockito
 
