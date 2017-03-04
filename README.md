@@ -28,7 +28,7 @@ Example dependency config:
 <dependency>
 	<groupId>com.github.skjolber</groupId>
 	<artifactId>mockito-rest-spring</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<scope>test</scope>
 </dependency>
 ```
@@ -133,7 +133,7 @@ Also, these alternatives do not require the bean/interface being available.
 [Apache 2.0]:          	http://www.apache.org/licenses/LICENSE-2.0.html
 [issue-tracker]:       	https://github.com/skjolber/mockito-rest-spring/issues
 [Maven]:                http://maven.apache.org/
-[1.0.0]:				https://github.com/skjolber/mockito-rest-spring/releases/tag/mockito-spring-rest-1.0.0
+[1.0.1]:				https://github.com/skjolber/mockito-rest-spring/releases/tag/mockito-spring-rest-1.0.0
 [WireMock]:             http://wiremock.org/
 [Spring Mock MVC]:      http://docs.spring.io/spring-security/site/docs/current/reference/html/test-mockmvc.html
 [Swagger]:				https://github.com/swagger-api/swagger-codegen
