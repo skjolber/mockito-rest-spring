@@ -38,6 +38,8 @@ public class RestServiceRule1Test {
 	private MyRestController serviceMock;
 	private RestTemplate restTemplate = new RestTemplate();
 	
+	private ResponseEntityMapper mapper = new ResponseEntityMapper();
+	
 	@Before
 	public void before() throws Exception {
 		serviceMock = rule.mock(MyRestController.class, baseUrl);
@@ -53,9 +55,7 @@ public class RestServiceRule1Test {
 	public void testMethod1() throws Exception {
 		String message = "abc";
 		
-		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.set("MyResponseHeader", "MyValue");
-		ResponseEntity<String> entity = new ResponseEntity<String>(message, responseHeaders, HttpStatus.OK);
+		ResponseEntity<String> entity = new ResponseEntity<String>(message, HttpStatus.OK);
 		
 		when(serviceMock.method1()).thenReturn(entity);
 		
@@ -125,6 +125,27 @@ public class RestServiceRule1Test {
 		assertThat(value.getCode(), is(request.getCode()));
 		assertThat(value.getValue(), is(request.getValue()));
 
+	}
+	
+	
+	/**
+	 * GET method returning an {@linkplain ResponseEntity} using the response entity mapper.
+	 * 
+	 * @throws Exception
+	 */
+	
+	@Test
+	public void testMethod4() throws Exception {
+		when(serviceMock.method4()).thenReturn(mapper.response("/examples/myResponse.json", MyResponse.class));
+		
+		URL u1 = new URL(baseUrl + "/rest/method4");
+		
+		ResponseEntity<MyResponse> responseEntity = restTemplate.getForEntity(u1.toURI(), MyResponse.class);
+
+		MyResponse body = responseEntity.getBody();
+		
+		assertThat(body.getCode(), is(0));
+		assertThat(body.getValue(), is("ghi"));
 	}
 	
 	/**

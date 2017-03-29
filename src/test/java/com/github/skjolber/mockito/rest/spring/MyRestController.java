@@ -47,6 +47,19 @@ public class MyRestController {
 		response.setValue("def");
 		return response;
 	}
+	
+	@RequestMapping(value = "/method4", method = RequestMethod.GET)
+	public ResponseEntity<MyResponse> method4() {
+		logger.info("Method 1");
+		
+		MyResponse response = new MyResponse();
+		response.setCode(0);
+		response.setValue("def");
+		
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.set("MyResponseHeader", "MyValue");
+		return new ResponseEntity<MyResponse>(response, responseHeaders, HttpStatus.CREATED);
+	}
 
 	@ExceptionHandler(MyException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
