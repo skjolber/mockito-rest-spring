@@ -115,7 +115,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
 	 * @param serviceInterfaces a list of desired service mocks
 	 * @param address base address, i.e. http://localhost:1234
 	 * @return map of mocks
-	 * @throws Exception
+	 * @throws Exception if a problem occurred
 	 */
     public Map<Class<?>, Object> mock(List<Class<?>> serviceInterfaces, String address) throws Exception {
     	return mock(serviceInterfaces, defaultContextBeans, address);
@@ -181,8 +181,6 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
      * 
      * Destroy endpoints.
      * 
-     * @throws Exception
-     * 
      */
 
     public void destroy() throws Exception {
@@ -195,8 +193,6 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
      * 
      * Stop endpoints.
      * 
-     * @throws Exception
-     * 
      */
 
     public void stop() throws Exception {
@@ -208,8 +204,6 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     /**
      * 
      * (Re)start endpoints.
-     * 
-     * @throws Exception
      * 
      */
 

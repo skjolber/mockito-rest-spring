@@ -14,7 +14,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -147,6 +146,24 @@ public class RestServiceRule1Test {
 		assertThat(body.getCode(), is(0));
 		assertThat(body.getValue(), is("ghi"));
 	}
+
+	@Test
+	public void testMethodWithResponseHeaders() throws Exception {
+		when(serviceMock.method4()).thenReturn(mapper.response("/examples/myResponse.json", MyResponse.class, "myHeader", "myValue"));
+		
+		URL u1 = new URL(baseUrl + "/rest/method4");
+		
+		Thread.sleep(1000);
+
+		ResponseEntity<MyResponse> responseEntity = restTemplate.getForEntity(u1.toURI(), MyResponse.class);
+
+		MyResponse body = responseEntity.getBody();
+		
+		assertThat(body.getCode(), is(0));
+		assertThat(body.getValue(), is("ghi"));
+		assertThat(responseEntity.getHeaders().get("myHeader").get(0), is("myValue"));
+	}
+	
 	
 	/**
 	 * 

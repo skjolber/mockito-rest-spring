@@ -64,6 +64,9 @@ public class ResponseEntityMapper {
 	
 	private File getResourceFile(String path) throws IOException {
 		URL directoryURL = getClass().getResource(path);
+		if(directoryURL == null) {
+			throw new FileNotFoundException(path);
+		}
 		try {
 			return new File(directoryURL.toURI());
 		} catch (URISyntaxException e) {
@@ -94,10 +97,13 @@ public class ResponseEntityMapper {
 		responseHeaders.setContentType(MediaType.APPLICATION_JSON);
 		
 		if(headers != null) {
+			if(headers.length % 2 != 0) {
+				throw new IllegalArgumentException("Headers must be in key-value pairs");
+			}
 			for(int i = 0; i < headers.length; i+=2) {
 				if(headers[i+1] instanceof String) {
 					responseHeaders.put((String)headers[i], Arrays.asList((String)headers[i+1]));
-				} else if(headers[i+1] instanceof String) {
+				} else if(headers[i+1] instanceof List) {
 					responseHeaders.put((String)headers[i], (List<String>)headers[i+1]);
 				} else throw new IllegalArgumentException("Unexpected value " + headers[i+1]);
 			}
