@@ -28,7 +28,7 @@ Example dependency config:
 <dependency>
 	<groupId>com.github.skjolber</groupId>
 	<artifactId>mockito-rest-spring</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<scope>test</scope>
 </dependency>
 ```
@@ -73,6 +73,7 @@ or from JSON
 ```java
 MyResponse response = jsonUtil.readResource("/example/MyResponse1.xml", MyResponse.class);
 ```
+
 using your favorite JSON utility. Then mock
 
 ```java
@@ -127,13 +128,14 @@ Also, these alternatives do not require the bean/interface being available.
 
 # History
 
- - [1.0.1]: Support for API interfaces, including [Swagger]-generated stubs. See [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRuleInterfaceTest.java).
+ - [1.0.2]: Improved JAXB helper, fix artifact id. 
+ - 1.0.1: Support for API interfaces, including [Swagger]-generated stubs. See [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRuleInterfaceTest.java).
  - 1.0.0: Initial version
 
 [Apache 2.0]:          	http://www.apache.org/licenses/LICENSE-2.0.html
 [issue-tracker]:       	https://github.com/skjolber/mockito-rest-spring/issues
 [Maven]:                http://maven.apache.org/
-[1.0.1]:				https://github.com/skjolber/mockito-rest-spring/releases/tag/mockito-spring-rest-1.0.0
+[1.0.2]:				https://github.com/skjolber/mockito-rest-spring/releases/tag/mockito-spring-rest-1.0.2
 [WireMock]:             http://wiremock.org/
 [Spring Mock MVC]:      http://docs.spring.io/spring-security/site/docs/current/reference/html/test-mockmvc.html
 [Swagger]:				https://github.com/swagger-api/swagger-codegen
