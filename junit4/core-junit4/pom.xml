@@ -1,0 +1,96 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+		<groupId>com.github.skjolber.mockito-rest-spring</groupId>
+		<artifactId>junit4-parent</artifactId>
+		<version>1.0.3-SNAPSHOT</version>
+    </parent>
+    
+    <artifactId>core-junit4</artifactId>
+	<name>core-junit4</name>
+	<packaging>jar</packaging>
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
+			<artifactId>core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
+			<artifactId>test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<scope>test</scope>
+		</dependency>	
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<scope>test</scope>
+		</dependency>		
+	</dependencies>
+	
+	<build>
+		<plugins>
+				<plugin>
+					<groupId>io.swagger</groupId>
+					<artifactId>swagger-codegen-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>generate-test-sources</id>
+							<phase>generate-test-sources</phase>
+							<goals>
+								<goal>generate</goal>
+							</goals>
+							<configuration>
+								<!-- specify the swagger yaml -->
+								<inputSpec>${basedir}/src/test/resources/api/swagger.yaml</inputSpec>
+
+								<!-- target to generate -->
+								<language>spring</language>
+
+								<output>${project.build.directory}/generated-sources</output>
+								<!-- pass any necessary config options -->
+								<configOptions>
+									<dateLibrary>joda</dateLibrary>
+									<interfaceOnly>true</interfaceOnly>
+									<singleContentTypes>true</singleContentTypes>
+									<hideGenerationTimestamp>true</hideGenerationTimestamp>
+								</configOptions>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>add-test-sources</id>
+							<phase>generate-test-sources</phase>
+							<goals>
+								<goal>add-test-source</goal>
+							</goals>
+							<configuration>
+								<sources>
+									<source>${project.build.directory}/generated-sources/src/main/java</source>
+								</sources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+		</plugins>
+	</build>
+</project>

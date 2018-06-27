@@ -8,8 +8,6 @@ Users will benefit from
   * full stack client testing
     * interceptors
   * simple JUnit Rule setup
-  * JUnit 4 & 5 support
-  * Tomcat, Jetty & Undertow support
 
 all with the regular advantages of [Mockito]. The REST API must be available either in the form
 of an annotated interface or a concrete implemenation.
@@ -24,24 +22,13 @@ Bugs, feature suggestions and help requests can be filed with the [issue-tracker
 # Obtain
 The project is based on [Maven] and is available on central Maven repository.
 
-Example JUnit 5 dependency config:
+Example dependency config:
 
 ```xml
 <dependency>
 	<groupId>com.github.skjolber</groupId>
-	<artifactId>mockito-rest-spring-tomcat-junit5</artifactId>
-	<version>1.0.3</version>
-	<scope>test</scope>
-</dependency>
-```
-
-or for JUnit 4
-
-```xml
-<dependency>
-	<groupId>com.github.skjolber</groupId>
-	<artifactId>mockito-rest-spring-tomcat-junit4</artifactId>
-	<version>1.0.3</version>
+	<artifactId>mockito-rest-spring</artifactId>
+	<version>1.0.2</version>
 	<scope>test</scope>
 </dependency>
 ```
