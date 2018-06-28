@@ -1,10 +1,53 @@
 package com.github.skjolber.mockito.rest.spring;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public interface MockitoSpringConfiguration {
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ApplicationContextEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
 
-	void setContextBeans(List<Class<?>> contextBeans);
+public class MockitoSpringConfiguration implements ApplicationListener<ApplicationContextEvent> {
+
+	protected List<Class<?>> contextBeans;
+	protected List<Class<?>> mockTargetBeans;
+	protected Map<Class<?>, Object> map = new HashMap<Class<?>, Object>();
+
+	public void setContextBeans(List<Class<?>> contextBeans) {
+		this.contextBeans = contextBeans;
+	}
 	
-	void setMockTargetBeans(List<Class<?>> mockTargetBeans);
+	public void setMockTargetBeans(List<Class<?>> mockTargetBeans) {
+		this.mockTargetBeans = mockTargetBeans;
+	}
+
+	public void onApplicationEvent(ApplicationContextEvent event) {
+		if(event instanceof ContextRefreshedEvent) {
+			// spring context has been started
+			ApplicationContext applicationContext = event.getApplicationContext();
+			for(Class<?> bean : mockTargetBeans) {
+				Object value = applicationContext.getBean(bean);
+				
+				map.put(bean, value);
+			}
+		}
+	}
+
+	public Object get(Class<?> cls) {
+		return map.get(cls);
+	}
+
+	public Map<Class<?>, Object> getAll() {
+		return map;
+	}
+	
+	public List<Class<?>> getContextBeans() {
+		return contextBeans;
+	}
+	
+	public List<Class<?>> getMockTargetBeans() {
+		return mockTargetBeans;
+	}
 }

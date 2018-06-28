@@ -99,9 +99,11 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     	WebAppContext webAppContext = new WebAppContext();
     	webAppContext.setContextPath(url.getPath());
     	
-    	JettyMockitoSpringConfiguration configuration = new JettyMockitoSpringConfiguration();
-    	configuration.setContextBeans(contextBeans);
-    	configuration.setMockTargetBeans(serviceInterfaces);
+    	MockitoSpringConfiguration mockitoSpringConfiguration = new MockitoSpringConfiguration(); 
+    	mockitoSpringConfiguration.setContextBeans(defaultContextBeans);
+    	mockitoSpringConfiguration.setMockTargetBeans(serviceInterfaces);
+
+    	JettyMockitoSpringConfiguration configuration = new JettyMockitoSpringConfiguration(mockitoSpringConfiguration);
     	
     	webAppContext.setConfigurations(new org.eclipse.jetty.webapp.Configuration[] { configuration });
     	webAppContext.setParentLoaderPriority(false);
@@ -115,7 +117,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
 
        	server.start();
 
-        return configuration.getAll();
+        return mockitoSpringConfiguration.getAll();
     }
     
     public <T> T mock(Class<T> serviceInterface, String baseAddress) throws Exception {

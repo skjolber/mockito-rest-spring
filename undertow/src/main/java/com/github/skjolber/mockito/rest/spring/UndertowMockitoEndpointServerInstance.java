@@ -22,7 +22,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 import org.apache.catalina.startup.Tomcat.FixContextListener;
 
-public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServerInstance {
+public class UndertowMockitoEndpointServerInstance implements MockitoEndpointServerInstance {
 
 	protected List<Tomcat> servers = new ArrayList<>();
     
@@ -51,7 +51,7 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
     }
 
 	public Map<Class<?>, Object> add(List<Class<?>> mockTargetBeans, List<Class<?>> defaultContextBeans, URL url) throws Exception {
-    	MockitoSpringConfiguration configuration = new MockitoSpringConfiguration();
+		MockitoSpringConfiguration configuration = new MockitoSpringConfiguration();
     	configuration.setContextBeans(defaultContextBeans);
 		configuration.setMockTargetBeans(mockTargetBeans);
 

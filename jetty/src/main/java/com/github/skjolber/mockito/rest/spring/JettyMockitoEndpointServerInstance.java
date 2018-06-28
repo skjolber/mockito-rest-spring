@@ -39,10 +39,12 @@ public class JettyMockitoEndpointServerInstance implements MockitoEndpointServer
 	public Map<Class<?>, Object> add(List<Class<?>> mockTargetBeans, List<Class<?>> defaultContextBeans, URL url) throws Exception {
     	WebAppContext webAppContext = new WebAppContext();
     	webAppContext.setContextPath(url.getPath());
-    	
-    	JettyMockitoSpringConfiguration configuration = new JettyMockitoSpringConfiguration();
-    	configuration.setContextBeans(defaultContextBeans);
-		configuration.setMockTargetBeans(mockTargetBeans);
+
+    	MockitoSpringConfiguration mockitoSpringConfiguration = new MockitoSpringConfiguration(); 
+    	mockitoSpringConfiguration.setContextBeans(defaultContextBeans);
+    	mockitoSpringConfiguration.setMockTargetBeans(mockTargetBeans);
+
+    	JettyMockitoSpringConfiguration configuration = new JettyMockitoSpringConfiguration(mockitoSpringConfiguration);
     	
     	webAppContext.setConfigurations(new org.eclipse.jetty.webapp.Configuration[] { configuration });
     	webAppContext.setParentLoaderPriority(true);
@@ -54,7 +56,7 @@ public class JettyMockitoEndpointServerInstance implements MockitoEndpointServer
 
        	server.start();
 
-        return configuration.getAll();
+        return mockitoSpringConfiguration.getAll();
 	}
 	
 }

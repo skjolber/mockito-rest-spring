@@ -49,7 +49,7 @@ or for JUnit 4
 # Usage
 The below is for JUnit 5. For JUnit 4 go [here](junit4).
 
-If you prefer skipping to a full example, see [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRule1Test.java). 
+If you prefer skipping to a full example, see [this unit test](junit5/core-junit5/src/test/java/com/github/skjolber/mockito/rest/spring/ExtensionMultipleTest.java). 
 
 # Basics
 In your JUnit test, add a `MockitoEndpointExtension` extension:
