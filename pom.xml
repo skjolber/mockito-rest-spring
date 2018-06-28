@@ -525,9 +525,7 @@
 		<module>test</module>
 		<module>jetty</module>
 		<module>tomcat</module>
-		<!-- 
 		<module>undertow</module>
-		 -->
 		<module>junit4</module>
 		<module>junit5</module>
 	</modules>

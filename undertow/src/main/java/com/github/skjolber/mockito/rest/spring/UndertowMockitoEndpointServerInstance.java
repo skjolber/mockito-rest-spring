@@ -1,30 +1,33 @@
 package com.github.skjolber.mockito.rest.spring;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import javax.servlet.ServletRegistration;
+import javax.servlet.ServletException;
 
-import org.apache.catalina.Context;
-import org.apache.catalina.Lifecycle;
-import org.apache.catalina.LifecycleEvent;
-import org.apache.catalina.LifecycleListener;
-import org.apache.catalina.LifecycleState;
-import org.apache.catalina.Wrapper;
-import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.startup.Tomcat;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import org.apache.catalina.startup.Tomcat.FixContextListener;
+import io.undertow.Handlers;
+import io.undertow.Undertow;
+import io.undertow.server.handlers.PathHandler;
+import io.undertow.servlet.Servlets;
+import io.undertow.servlet.api.DeploymentInfo;
+import io.undertow.servlet.api.DeploymentManager;
+import io.undertow.servlet.api.InstanceFactory;
+import io.undertow.servlet.api.ListenerInfo;
+import io.undertow.servlet.api.ServletInfo;
+import io.undertow.servlet.util.ImmediateInstanceFactory;
 
 public class UndertowMockitoEndpointServerInstance implements MockitoEndpointServerInstance {
 
-	protected List<Tomcat> servers = new ArrayList<>();
+	private static final String SPRING_DISPATCHER_MAPPING_URL = "/*";
+	private static final String CONTEXT_PATH = "/";
+	
+	protected List<Undertow> servers = new ArrayList<>();
     
     /**
      * 
@@ -33,7 +36,7 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
      */
 
     public void stop() throws Exception {
-        for (Tomcat endpointImpl : servers) {
+        for (Undertow endpointImpl : servers) {
             endpointImpl.stop();
         }
     }
@@ -45,7 +48,7 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
      */
 
     public void start() throws Exception {
-        for (Tomcat endpointImpl : servers) {
+        for (Undertow endpointImpl : servers) {
             endpointImpl.start();
         }
     }
@@ -55,14 +58,6 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
     	configuration.setContextBeans(defaultContextBeans);
 		configuration.setMockTargetBeans(mockTargetBeans);
 
-    	Tomcat tomcat = new Tomcat();
-    	tomcat.setPort(url.getPort());
-    	tomcat.setHostname("localhost");
-    	
-    	// http://www.codejava.net/servers/tomcat/how-to-embed-tomcat-server-into-java-web-applications
-    	// https://github.com/spring-projects/spring-boot/blob/master/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/web/embedded/tomcat/TomcatServletWebServerFactory.java
-    	
-		// Create the dispatcher servlet's Spring application context
 		MockitoSpringFactoryWebApplicationContext dispatcherContext = new MockitoSpringFactoryWebApplicationContext(mockTargetBeans);
 		
 		// web config must be loaded after beans
@@ -72,41 +67,42 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		
 		dispatcherContext.addApplicationListener(configuration);
 		
-    	String contextPath = "/";
-    	String docBase = new File(".").getAbsolutePath();
+		Undertow undertow = configureUndertow(dispatcherContext, url);
 
-    	Context context = tomcat.addContext(contextPath, docBase);
-    	context.addLifecycleListener(new FixContextListener());
-    	
-        DispatcherServlet servlet = new DispatcherServlet(dispatcherContext);
+		undertow.start();
         
-        Wrapper defaultServlet = context.createWrapper();
-        defaultServlet.setName("default");
-		defaultServlet.setLoadOnStartup(1);
-		defaultServlet.setOverridable(true);
-		defaultServlet.setServlet(servlet);
-		
-		context.addChild(defaultServlet);
-		context.addServletMappingDecoded("/", defaultServlet.getName());        
-
-        tomcat.start();
-        
-        do {
-        	switch(tomcat.getServer().getState()) {
-        	case NEW:
-        	case INITIALIZING:
-        	case INITIALIZED:
-        	case STARTING_PREP:
-        	case STARTING:
-        		Thread.sleep(100);
-        		continue;
-        	default : break;
-        	}
-        	break;
-        } while(true);
-        if(tomcat.getServer().getState() == LifecycleState.STARTED) {
-            return configuration.getAll();
-        }
-        throw new IllegalStateException("Unable to start server");
+        return configuration.getAll();
 	}
+	
+    private Undertow configureUndertow(MockitoSpringFactoryWebApplicationContext context, URL url) throws ServletException {
+    	// https://github.com/yarosla/spring-undertow/blob/master/src/main/java/ys/undertow/UndertowMain.java
+        DeploymentInfo servletBuilder = Servlets.deployment()
+                .setClassLoader(Undertow.class.getClassLoader())
+                .setContextPath(CONTEXT_PATH).setDeploymentName("mock")
+                .addServlet(createDispatcherServlet(context))
+                .addListener(createContextLoaderListener(context));
+
+        DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
+        manager.deploy();
+
+        PathHandler path = Handlers.path(Handlers.redirect("/"))
+                .addPrefixPath(CONTEXT_PATH, manager.start());
+
+        return Undertow.builder()
+                .addHttpListener(url.getPort(), url.getHost())
+                .setHandler(path)
+                .build();
+    }
+
+    private static ListenerInfo createContextLoaderListener(WebApplicationContext context) {
+        InstanceFactory<ContextLoaderListener> factory = new ImmediateInstanceFactory<>(new ContextLoaderListener(context));
+        return new ListenerInfo(ContextLoaderListener.class, factory);
+    }
+
+    private static ServletInfo createDispatcherServlet(WebApplicationContext context) {
+        InstanceFactory<DispatcherServlet> factory = new ImmediateInstanceFactory<>(new DispatcherServlet(context));
+        return Servlets.servlet("DispatcherServlet", DispatcherServlet.class, factory)
+                .addMapping(SPRING_DISPATCHER_MAPPING_URL)
+                .setLoadOnStartup(1);
+    }	
 }

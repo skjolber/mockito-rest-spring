@@ -37,7 +37,7 @@
 			<!-- 
 			<artifactId>jetty</artifactId>
 			-->
-			<artifactId>tomcat</artifactId>
+			<artifactId>undertow</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
