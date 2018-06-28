@@ -2,40 +2,32 @@ package com.github.skjolber.mockito.rest.spring;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.net.URL;
+import java.net.URI;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.github.skjolber.mockito.rest.spring.api.MockEndpoint;
 
 /**
  * 
- * Plain java junit rule test.
+ * Test using a single {@link RestController}.
  * 
  */
 
 @ExtendWith(MockitoEndpointExtension.class)
-public class ExtensionTest {
+public class ExtensionRestControllerTest {
 
-	private static String baseUrl = "http://localhost:9999";
-	
 	private RestTemplate restTemplate = new RestTemplate();
 
 	@MockEndpoint
 	private MyRestController serviceMock;
+	
 	/**
 	 * GET method returning an {@linkplain ResponseEntity}.
 	 * 
@@ -46,13 +38,11 @@ public class ExtensionTest {
 	public void testMethod1() throws Exception {
 		String message = "abc";
 		
-		ResponseEntity<String> entity = new ResponseEntity<String>(message, HttpStatus.OK);
+		when(serviceMock.method1()).thenReturn(ResponseEntity.ok().body(message));
 		
-		when(serviceMock.method1()).thenReturn(entity);
+		URI u1 = new URI("http://localhost:" + MockitoEndpointExtension.getPort() + "/rest/method1");
 		
-		URL u1 = new URL(baseUrl + "/rest/method1");
-		
-		ResponseEntity<String> responseEntity = restTemplate.getForEntity(u1.toURI(), String.class);
+		ResponseEntity<String> responseEntity = restTemplate.getForEntity(u1, String.class);
 		
 		assertThat(responseEntity.getBody(), is(message));
 	}

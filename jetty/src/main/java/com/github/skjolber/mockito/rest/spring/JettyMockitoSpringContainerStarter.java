@@ -14,14 +14,14 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-public class MockitoSpringContainerStarter extends AbstractLifeCycle implements ServletContextHandler.ServletContainerInitializerCaller {
+public class JettyMockitoSpringContainerStarter extends AbstractLifeCycle implements ServletContextHandler.ServletContainerInitializerCaller {
 
 	private WebAppContext context;
 	private List<Class<?>> mockTargetBeans;
 	private List<Class<?>> contextBeans;
 	private ApplicationListener<ApplicationContextEvent> listener;
 
-	public MockitoSpringContainerStarter(WebAppContext context, List<Class<?>> beans, List<Class<?>> configurationBeans, ApplicationListener<ApplicationContextEvent> listener) {
+	public JettyMockitoSpringContainerStarter(WebAppContext context, List<Class<?>> beans, List<Class<?>> configurationBeans, ApplicationListener<ApplicationContextEvent> listener) {
 		this.context = context;
 		this.mockTargetBeans = beans;
 		this.contextBeans = configurationBeans;

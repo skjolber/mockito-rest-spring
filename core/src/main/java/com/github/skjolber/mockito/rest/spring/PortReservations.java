@@ -14,8 +14,8 @@ import javax.net.ServerSocketFactory;
 
 public class PortReservations {
 	
-	private static final int PORT_RANGE_MAX = 9999; //65535;
-	private static final int PORT_RANGE_START = 9999; //1024+1;
+	private static final int PORT_RANGE_MAX = 65535;
+	private static final int PORT_RANGE_START = 1024+1;
 	private static final int PORT_RANGE_END = PORT_RANGE_MAX;
 
 	private final int portRangeStart;

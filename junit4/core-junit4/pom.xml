@@ -22,6 +22,10 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
+			<artifactId>jetty</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
 			<artifactId>test</artifactId>
 			<scope>test</scope>
 		</dependency>

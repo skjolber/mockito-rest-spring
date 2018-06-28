@@ -2,15 +2,14 @@ package com.github.skjolber.mockito.rest.spring;
 
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ServiceLoader;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -22,6 +21,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
+import org.springframework.core.io.support.SpringFactoriesLoader;
 
 import com.github.skjolber.mockito.rest.spring.api.MockEndpoint;
 import com.github.skjolber.mockito.rest.spring.mockito.MockEndpointFieldHelper;
@@ -30,15 +30,32 @@ public class MockitoEndpointExtension implements BeforeAllCallback, AfterAllCall
 BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback,
 ParameterResolver {
 
-    private PortReservations portReservations;
+    private static final String PORT_NAME = "mockitoRestSpringServerPort";
+    
+    public static int getPort() {
+    	String property = System.getProperty(PORT_NAME);
+    	if(property == null) {
+    		throw new IllegalArgumentException("Port not set");
+    	}
+    	return Integer.parseInt(property);
+    }
+    
+	private PortReservations portReservations;
     private MockitoEndpointServiceFactory serviceFactory = new MockitoEndpointServiceFactory();
     
-    /** beans added to the sprin context */
+    /** beans added to the Spring context */
     private List<Class<?>> defaultContextBeans;
-	private List<Server> servers = new ArrayList<Server>();
+	private MockitoEndpointServerInstance server;
     
     public MockitoEndpointExtension() {
     	this(Arrays.<Class<?>>asList(DefaultSpringWebMvcConfig.class));
+    	
+    	ServiceLoader<MockitoEndpointServerInstance> loader = ServiceLoader.load(MockitoEndpointServerInstance.class);
+    	Iterator<MockitoEndpointServerInstance> iterator = loader.iterator();
+    	if(!iterator.hasNext()) {
+    		throw new IllegalArgumentException("Expected implementation of " + MockitoEndpointServerInstance.class.getName() + ", found none");
+    	}
+    	server = iterator.next();
 	}
     
     public MockitoEndpointExtension(List<Class<?>> contextBeans) {
@@ -82,29 +99,27 @@ ParameterResolver {
 	public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
 		MockEndpointFieldHelper helper = new MockEndpointFieldHelper(testInstance, testInstance.getClass());
 		
-		List<Class<?>> serviceInterfaces = new ArrayList<>();
-		
 		Map<Class<?>, Field> fields = new HashMap<>();
 		for (Field field : helper.getFields()) {
 			
-			if(field.isAnnotationPresent(MockEndpoint.class)) {
+			MockEndpoint annotation = field.getAnnotation(MockEndpoint.class);
+			if(annotation != null) {
 				
-				Class<?> service = serviceFactory.service(field.getType());
+				String path = annotation.path();
+				if(path.isEmpty()) {
+					path = null;
+				}
 				
-				serviceInterfaces.add(service);
-				
+				Class<?> service = serviceFactory.add(field.getType(), path);
 				fields.put(service, field);
 			}
 		}
 		
-		String address = String.format("http://localhost:%s", portReservations.getPorts().get("mockitoSpringEndpointPort"));
+		String address = String.format("http://localhost:%s", portReservations.getPorts().get(PORT_NAME));
 		
-		Map<Class<?>, Object> mocks = mock(serviceInterfaces, address);
+		Map<Class<?>, Object> mocks = mock(address);
 		
 		for (Entry<Class<?>, Field> entry : fields.entrySet()) {
-			Object object = mocks.get(entry.getKey());
-			System.out.println("Mock is " + object);
-			
 			helper.setField(entry.getValue(), mocks.get(entry.getKey()));
 		}
 		
@@ -114,14 +129,12 @@ ParameterResolver {
 	public void afterAll(ExtensionContext context) throws Exception {
 		portReservations.stop();
 		
-        for (Server endpointImpl : servers) {
-            endpointImpl.stop();
-        }
+		server.stop();
 	}
 
 	@Override
 	public void beforeAll(ExtensionContext context) throws Exception {
-	    portReservations = new PortReservations("mockitoSpringEndpointPort");
+	    portReservations = new PortReservations(PORT_NAME);
 		portReservations.start();
 	}
 	
@@ -133,32 +146,17 @@ ParameterResolver {
 	 * @return map of mocks
 	 * @throws Exception if a problem occurred
 	 */
-    public Map<Class<?>, Object> mock(List<Class<?>> serviceInterfaces, String address) throws Exception {
-    	return mock(serviceInterfaces, defaultContextBeans, address);
-    }
 
-    public Map<Class<?>, Object> mock(List<Class<?>> serviceInterfaces, List<Class<?>> contextBeans, String address) throws Exception {
+    public Map<Class<?>, Object> mock(String address) throws Exception {
         // wrap the evaluator mock in proxy
         URL url = new URL(address);
         if (!url.getHost().equals("localhost") && !url.getHost().equals("127.0.0.1")) {
             throw new IllegalArgumentException("Only local mocking is supported");
         }
-    	WebAppContext webAppContext = new WebAppContext();
-    	webAppContext.setContextPath(url.getPath());
-    	
-    	MockitoSpringConfiguration configuration = new MockitoSpringConfiguration(serviceInterfaces, contextBeans);
-    	
-    	webAppContext.setConfigurations(new org.eclipse.jetty.webapp.Configuration[] { configuration });
-    	webAppContext.setParentLoaderPriority(true);
-    	
-    	Server server = new Server(url.getPort());
-        server.setHandler(webAppContext);
+        
+    	List<Class<?>> mockTargetBeans = serviceFactory.getBeans();
 
-        servers.add(server);
-
-       	server.start();
-
-        return configuration.getAll();
+    	return server.add(mockTargetBeans, defaultContextBeans, url);
     }
 
     /**
@@ -168,9 +166,7 @@ ParameterResolver {
      */
 
     public void stop() throws Exception {
-        for (Server endpointImpl : servers) {
-            endpointImpl.stop();
-        }
+       	server.stop();
     }
 
     /**
@@ -180,9 +176,7 @@ ParameterResolver {
      */
 
     public void start() throws Exception {
-        for (Server endpointImpl : servers) {
-            endpointImpl.start();
-        }
+    	server.start();
     }
 	
 }

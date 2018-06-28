@@ -6,14 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
-
-import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.description.annotation.AnnotationDescription;
-import net.bytebuddy.dynamic.DynamicType.Loaded;
 
 /**
  * Rule for mocking remoting endpoints. <br>
@@ -24,59 +17,13 @@ import net.bytebuddy.dynamic.DynamicType.Loaded;
 
 public class RestServiceRule extends org.junit.rules.ExternalResource {
 
-    public static <T> Class<T> asService(Class<T> serviceInterface, ClassLoader classLoader) throws Exception {
-    	return asService(serviceInterface, classLoader, null);
-    }
-
-    public static <T> Class<T> asService(Class<T> serviceInterface, ClassLoader classLoader, String path) throws Exception {
-    	
-    	net.bytebuddy.dynamic.DynamicType.Builder<T> subclass = new ByteBuddy().subclass(serviceInterface);
-    	
-    	if(!serviceInterface.isAnnotationPresent(RestController.class) && !serviceInterface.isAnnotationPresent(Controller.class)) {
-    		subclass = subclass.annotateType(AnnotationDescription.Builder.ofType(RestController.class).build());
-    	}
-    	if(path != null) {
-	   		subclass = subclass.annotateType(AnnotationDescription.Builder.ofType(org.springframework.web.bind.annotation.RequestMapping.class).defineArray("path", new String[]{path}).build());
-    	}
-    	
-   		Loaded<T> load = subclass.make().load(classLoader);
-
-   		Class<? extends T> loaded = load.getLoaded();
-   		
-   		classLoader = loaded.getClassLoader();
-   		
-        java.lang.reflect.Method m = ClassLoader.class.getDeclaredMethod("findLoadedClass", new Class[] { String.class });
-        m.setAccessible(true);				
-
-		do {
-			if(classLoader == null) {
-				System.out.println("No more classloaders");
-				break;
-			}
-			
-			try {
-		          Object test1 = m.invoke(classLoader, load.getLoaded().getName());
-		          System.out.println(test1 != null);
-		          
-				System.out.println("Class present: " + (test1 != null) + " in " + classLoader);
-			} catch(Exception e) {
-				System.out.println("Class not present: " + classLoader);
-			}
-			classLoader = classLoader.getParent();
-		} while(classLoader != null);
-
-   		return (Class<T>) load.getLoaded();
-    }
-
-	public class Builder {
+	public class Builder extends MockitoEndpointServiceFactory {
 		
 		public Builder(String address) {
 			this.address = address;
 		}
 
 		private String address;
-		
-		private List<Class<?>> beans = new ArrayList<>();
 		
 		private List<Class<?>> contextBeans = new ArrayList<>(RestServiceRule.this.defaultContextBeans);
 		
@@ -97,11 +44,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
 		}
 
 		public Builder service(Class<?> serviceInterface, String path) throws Exception {
-			if(path != null || serviceInterface.isInterface()) {
-				beans.add(RestServiceRule.asService(serviceInterface, classLoader, path));
-			} else {
-				beans.add(serviceInterface);
-			}
+			add(serviceInterface, path);
 			return this;
 		}
 
@@ -122,8 +65,8 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     }
     
     /** beans added to the sprin context */
-    private List<Class<?>> defaultContextBeans;
-    private ClassLoader classLoader = getClass().getClassLoader(); 
+    protected List<Class<?>> defaultContextBeans;
+    protected MockitoEndpointServiceFactory mockitoEndpointServiceFactory = new MockitoEndpointServiceFactory();
     		
     public RestServiceRule() {
     	this(Arrays.<Class<?>>asList(DefaultSpringWebMvcConfig.class));
@@ -156,12 +99,14 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     	WebAppContext webAppContext = new WebAppContext();
     	webAppContext.setContextPath(url.getPath());
     	
-    	MockitoSpringConfiguration configuration = new MockitoSpringConfiguration(serviceInterfaces, contextBeans);
+    	JettyMockitoSpringConfiguration configuration = new JettyMockitoSpringConfiguration();
+    	configuration.setContextBeans(contextBeans);
+    	configuration.setMockTargetBeans(serviceInterfaces);
     	
     	webAppContext.setConfigurations(new org.eclipse.jetty.webapp.Configuration[] { configuration });
     	webAppContext.setParentLoaderPriority(false);
     	
-    	//webAppContext.setClassLoader(serviceInterfaces.get(0).getClassLoader());
+    	webAppContext.setClassLoader(mockitoEndpointServiceFactory.getClassLoader());
     	
     	Server server = new Server(url.getPort());
         server.setHandler(webAppContext);
@@ -183,7 +128,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
 
     public <T> T mock(Class<T> serviceInterface, List<Class<?>> contextBeans, String baseAddress, String path) throws Exception {
     	if(path != null || serviceInterface.isInterface()) {
-    		serviceInterface = asService(serviceInterface, classLoader, path);
+    		serviceInterface = mockitoEndpointServiceFactory.asService(serviceInterface, path);
     	}
      	List<Class<?>> mockTargetBeans = new ArrayList<>();
     	mockTargetBeans.add(serviceInterface);
