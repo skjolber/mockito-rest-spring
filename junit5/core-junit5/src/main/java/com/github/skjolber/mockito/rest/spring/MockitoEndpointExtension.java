@@ -21,8 +21,6 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
-import org.springframework.core.io.support.SpringFactoriesLoader;
-
 import com.github.skjolber.mockito.rest.spring.api.MockEndpoint;
 import com.github.skjolber.mockito.rest.spring.mockito.MockEndpointFieldHelper;
 

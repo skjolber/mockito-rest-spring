@@ -3,24 +3,15 @@ package com.github.skjolber.mockito.rest.spring;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
-import javax.servlet.ServletRegistration;
 
 import org.apache.catalina.Context;
-import org.apache.catalina.Lifecycle;
-import org.apache.catalina.LifecycleEvent;
-import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.Wrapper;
-import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
-import org.springframework.web.servlet.DispatcherServlet;
-
 import org.apache.catalina.startup.Tomcat.FixContextListener;
+import org.springframework.web.servlet.DispatcherServlet;
 
 public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServerInstance {
 

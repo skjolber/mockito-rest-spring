@@ -7,6 +7,7 @@
 		<version>1.0.3-SNAPSHOT</version>
     </parent>
     
+    <packaging>jar</packaging>
 	<artifactId>test</artifactId>
 	<name>test</name>
 
@@ -30,7 +31,6 @@
 		<dependency>
 		    <groupId>javax.servlet</groupId>
 		    <artifactId>javax.servlet-api</artifactId>
-		    <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

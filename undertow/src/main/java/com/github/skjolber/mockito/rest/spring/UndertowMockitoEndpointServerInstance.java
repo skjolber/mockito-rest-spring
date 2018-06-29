@@ -78,7 +78,8 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
     	// https://github.com/yarosla/spring-undertow/blob/master/src/main/java/ys/undertow/UndertowMain.java
         DeploymentInfo servletBuilder = Servlets.deployment()
                 .setClassLoader(Undertow.class.getClassLoader())
-                .setContextPath(CONTEXT_PATH).setDeploymentName("mock")
+                .setContextPath(CONTEXT_PATH)
+                .setDeploymentName("mock")
                 .addServlet(createDispatcherServlet(context))
                 .addListener(createContextLoaderListener(context));
 

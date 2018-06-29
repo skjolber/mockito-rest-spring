@@ -1,9 +1,6 @@
 package com.github.skjolber.mockito.rest.spring;
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 
 public class MockitoSpringFactoryBean implements FactoryBean<Object> {
 

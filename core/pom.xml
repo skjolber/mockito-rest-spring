@@ -7,6 +7,7 @@
 		<version>1.0.3-SNAPSHOT</version>
     </parent>
     
+    <packaging>jar</packaging>
 	<artifactId>core</artifactId>
 	<name>core</name>
 
@@ -65,5 +66,9 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>		
 	</dependencies>
 </project>
