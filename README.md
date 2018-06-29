@@ -1,20 +1,22 @@
 [![Build Status](https://travis-ci.org/skjolber/mockito-rest-spring.svg?branch=master)](https://travis-ci.org/skjolber/mockito-rest-spring)
 
 # mockito-rest-spring
-Spring REST web-service mocking utility which creates real service endpoints on local ports using webserver instances. These endpoints delegate requests directly to mocks.
+This utility supports unit testing applications which consume external REST services specified using Swagger/OpenAPI or RAML. 
+
+By running a code generator and mocking the resulting stubs, __full [Mockito] support for over-the-wire mocks is provided__.
 
 Users will benefit from
 
-  * full stack client testing
-    * interceptors
-  * simple setup
-  * [JUnit 4](junit4) & [JUnit 5](junit5) support
+  * full stack __integration-style testing__ - mocks are live on local ports using webserver instances
+  * [Mockito] support - i.e. full method/type safety
+  * simple setup using JUnit 
+    * `@Rule` for [Junit 4](junit4)
+    * `@Extension` for [JUnit 5](junit5)
   * Tomcat, Jetty & Undertow support
 
-all with the regular advantages of [Mockito]. The REST API must be available either in the form
-of an annotated interface or a concrete implemenation.
+The REST API must be available either in the form of an annotated interface or a concrete implemenation at compile time.
 
-While the primary target is Spring-flavored REST, there is really no constraints on using other implementations. 
+While the primary target is __Spring-flavored REST__, there is really no constraints on using other implementations. 
 
 Bugs, feature suggestions and help requests can be filed with the [issue-tracker].
 
@@ -52,10 +54,10 @@ The below is for JUnit 5. For JUnit 4 go [here](junit4).
 If you prefer skipping to a full example, see [this unit test](junit5/core-junit5/src/test/java/com/github/skjolber/mockito/rest/spring/ExtensionMultipleTest.java). 
 
 # Basics
-In your JUnit test, add a `MockitoEndpointExtension` extension:
+In your JUnit test, add a `MockitoSpringEndpointExtension` extension:
 
 ```java
-@ExtendWith(MockitoEndpointExtension.class)
+@ExtendWith(MockitoSpringEndpointExtension.class)
 ```
 
 and mock service endpoints by using
@@ -65,7 +67,7 @@ and mock service endpoints by using
 private MyRestService myRestService;
 ```
 
-where the MyRestService is either an interface or a concrete `@RestController` implementation. For a custom (or missing) class level [RequestMapping] use
+where the `MyRestServic`e is either an interface or a concrete `@RestController` implementation. For a custom (or missing) class level [RequestMapping] use
 
 ```java
 @MockEndpoint(path = "/rest")
@@ -73,6 +75,16 @@ private MyRestService myRestService;
 ```
 
 The returned `serviceMock` instance is a normal [Mockito] mock(..) object. 
+
+### Client configuration
+The mock endpoint is started on a random free local port and saved to  `System` property `mockitoRestSpringServerPort`. 
+
+Configure your client to pick up this value, for example via regular properties in Spring:
+
+```
+my.server.url=http://localhost:${mockitoRestSpringServerPort}/rest/pet
+```
+
 
 # Details
 Create mock response via code
