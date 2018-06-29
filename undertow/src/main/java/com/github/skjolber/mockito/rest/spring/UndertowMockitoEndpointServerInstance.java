@@ -26,84 +26,94 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 
 	private static final String SPRING_DISPATCHER_MAPPING_URL = "/*";
 	private static final String CONTEXT_PATH = "/";
-	
+
+	protected boolean started = true;
 	protected List<Undertow> servers = new ArrayList<>();
-    
-    /**
-     * 
-     * Stop endpoints.
-     * 
-     */
 
-    public void stop() throws Exception {
-        for (Undertow endpointImpl : servers) {
-            endpointImpl.stop();
-        }
-    }
+	/**
+	 * 
+	 * Stop endpoints.
+	 * 
+	 */
 
-    /**
-     * 
-     * (Re)start endpoints.
-     * 
-     */
+	public void stop() throws Exception {
+		if(started) {
+			started = false;
 
-    public void start() throws Exception {
-        for (Undertow endpointImpl : servers) {
-            endpointImpl.start();
-        }
-    }
+			for (Undertow server : servers) {
+				server.stop();
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * (Re)start endpoints.
+	 * 
+	 */
+
+	public void start() throws Exception {
+		if(!started) {
+			started = true;
+			for (Undertow server : servers) {
+				server.start();
+			}
+		}
+	}
 
 	public Map<Class<?>, Object> add(List<Class<?>> mockTargetBeans, List<Class<?>> defaultContextBeans, URL url) throws Exception {
 		MockitoSpringConfiguration configuration = new MockitoSpringConfiguration();
-    	configuration.setContextBeans(defaultContextBeans);
+		configuration.setContextBeans(defaultContextBeans);
 		configuration.setMockTargetBeans(mockTargetBeans);
 
 		MockitoSpringFactoryWebApplicationContext dispatcherContext = new MockitoSpringFactoryWebApplicationContext(mockTargetBeans);
-		
+
 		// web config must be loaded after beans
 		for(Class<?> bean : defaultContextBeans) {
 			dispatcherContext.register(bean);
 		}
-		
+
 		dispatcherContext.addApplicationListener(configuration);
-		
+
 		Undertow undertow = configureUndertow(dispatcherContext, url);
 
+		servers.add(undertow);
+
 		undertow.start();
-        
-        return configuration.getAll();
+
+		return configuration.getAll();
 	}
-	
-    private Undertow configureUndertow(MockitoSpringFactoryWebApplicationContext context, URL url) throws ServletException {
-    	// https://github.com/yarosla/spring-undertow/blob/master/src/main/java/ys/undertow/UndertowMain.java
-        DeploymentInfo servletBuilder = Servlets.deployment()
-                .setClassLoader(Undertow.class.getClassLoader())
-                .setContextPath(CONTEXT_PATH)
-                .setDeploymentName("mock")
-                .addServlet(createDispatcherServlet(context))
-                .addListener(createContextLoaderListener(context));
 
-        DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
-        manager.deploy();
+	private Undertow configureUndertow(MockitoSpringFactoryWebApplicationContext context, URL url) throws ServletException {
+		// https://github.com/yarosla/spring-undertow/blob/master/src/main/java/ys/undertow/UndertowMain.java
+		DeploymentInfo servletBuilder = Servlets.deployment()
+				.setClassLoader(Undertow.class.getClassLoader())
+				.setContextPath(url.getPath())
+				.setDeploymentName("mock")
+				.addServlet(createDispatcherServlet(context))
+				.addListener(createContextLoaderListener(context));
 
-        PathHandler path = Handlers.path(Handlers.redirect("/"))
-                .addPrefixPath(CONTEXT_PATH, manager.start());
+		DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
+		manager.deploy();
 
-        return Undertow.builder()
-                .addHttpListener(url.getPort(), url.getHost())
-                .setHandler(path)
-                .build();
-    }
+		PathHandler path = Handlers.path(Handlers.redirect("/"))
+				.addPrefixPath(CONTEXT_PATH, manager.start());
 
-    private static ListenerInfo createContextLoaderListener(WebApplicationContext context) {
-        InstanceFactory<ContextLoaderListener> factory = new ImmediateInstanceFactory<>(new ContextLoaderListener(context));
-        return new ListenerInfo(ContextLoaderListener.class, factory);
-    }
+		return Undertow.builder()
+				.addHttpListener(url.getPort(), url.getHost())
+				.setHandler(path)
+				.build();
+	}
 
-    private static ServletInfo createDispatcherServlet(WebApplicationContext context) {
-        InstanceFactory<DispatcherServlet> factory = new ImmediateInstanceFactory<>(new DispatcherServlet(context));
-        return Servlets.servlet("DispatcherServlet", DispatcherServlet.class, factory)
-                .addMapping(SPRING_DISPATCHER_MAPPING_URL)
-                .setLoadOnStartup(1);
-    }	
+	private static ListenerInfo createContextLoaderListener(WebApplicationContext context) {
+		InstanceFactory<ContextLoaderListener> factory = new ImmediateInstanceFactory<>(new ContextLoaderListener(context));
+		return new ListenerInfo(ContextLoaderListener.class, factory);
+	}
+
+	private static ServletInfo createDispatcherServlet(WebApplicationContext context) {
+		InstanceFactory<DispatcherServlet> factory = new ImmediateInstanceFactory<>(new DispatcherServlet(context));
+		return Servlets.servlet("DispatcherServlet", DispatcherServlet.class, factory)
+				.addMapping(SPRING_DISPATCHER_MAPPING_URL)
+				.setLoadOnStartup(1);
+	}	
 }

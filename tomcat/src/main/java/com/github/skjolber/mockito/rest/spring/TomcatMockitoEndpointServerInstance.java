@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.catalina.Context;
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
@@ -15,20 +16,25 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServerInstance {
 
+	protected boolean started = true;
 	protected List<Tomcat> servers = new ArrayList<>();
     
-    /**
+	   /**
      * 
      * Stop endpoints.
      * 
      */
 
     public void stop() throws Exception {
-        for (Tomcat endpointImpl : servers) {
-            endpointImpl.stop();
-        }
+    	if(started) {
+    		started = false;
+    		
+	        for (Tomcat server : servers) {
+	        	stop(server);
+	        }
+    	}
     }
-
+    	
     /**
      * 
      * (Re)start endpoints.
@@ -36,9 +42,12 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
      */
 
     public void start() throws Exception {
-        for (Tomcat endpointImpl : servers) {
-            endpointImpl.start();
-        }
+    	if(!started) {
+    		started = true;
+	        for (Tomcat server : servers) {
+	        	start(server);
+	        }
+    	}
     }
 
 	public Map<Class<?>, Object> add(List<Class<?>> mockTargetBeans, List<Class<?>> defaultContextBeans, URL url) throws Exception {
@@ -63,7 +72,7 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
 		
 		dispatcherContext.addApplicationListener(configuration);
 		
-    	String contextPath = "/";
+    	String contextPath = url.getPath();
     	String docBase = new File(".").getAbsolutePath();
 
     	Context context = tomcat.addContext(contextPath, docBase);
@@ -80,24 +89,47 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
 		context.addChild(defaultServlet);
 		context.addServletMappingDecoded("/", defaultServlet.getName());        
 
-        tomcat.start();
+        servers.add(tomcat);
+		
+        start(tomcat);
         
-        do {
+        if(tomcat.getServer().getState() == LifecycleState.STARTED) {
+            return configuration.getAll();
+        }
+        throw new IllegalStateException("Unable to start server");
+	}
+
+	private void start(Tomcat tomcat) throws InterruptedException, LifecycleException {
+        tomcat.start();
+
+		do {
         	switch(tomcat.getServer().getState()) {
         	case NEW:
         	case INITIALIZING:
         	case INITIALIZED:
         	case STARTING_PREP:
         	case STARTING:
-        		Thread.sleep(100);
+        		Thread.sleep(10);
         		continue;
         	default : break;
         	}
         	break;
         } while(true);
-        if(tomcat.getServer().getState() == LifecycleState.STARTED) {
-            return configuration.getAll();
-        }
-        throw new IllegalStateException("Unable to start server");
 	}
+	
+
+    private void stop(Tomcat tomcat) throws LifecycleException, InterruptedException {
+		tomcat.stop();
+		tomcat.destroy();
+		do {
+        	switch(tomcat.getServer().getState()) {
+        	case DESTROYED:
+        	case FAILED:
+        		return;
+        	default : {
+        	}
+        	}
+    		Thread.sleep(10);
+        } while(true);		
+	}	
 }

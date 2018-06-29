@@ -2,11 +2,10 @@ package com.github.skjolber.mockito.rest.spring;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppContext;
+import java.util.ServiceLoader;
 
 /**
  * Rule for mocking remoting endpoints. <br>
@@ -64,7 +63,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
         return new RestServiceRule(beans);
     }
     
-    /** beans added to the sprin context */
+    /** beans added to the spring context */
     protected List<Class<?>> defaultContextBeans;
     protected MockitoEndpointServiceFactory mockitoEndpointServiceFactory = new MockitoEndpointServiceFactory();
     		
@@ -76,7 +75,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     	this.defaultContextBeans = contextBeans;
 	}
 
-	private List<Server> servers = new ArrayList<Server>();
+	private List<MockitoEndpointServerInstance> servers = new ArrayList<MockitoEndpointServerInstance>();
 
 	/**
 	 * Create (and start) service endpoint with mock delegates. 
@@ -96,28 +95,22 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
         if (!url.getHost().equals("localhost") && !url.getHost().equals("127.0.0.1")) {
             throw new IllegalArgumentException("Only local mocking is supported");
         }
-    	WebAppContext webAppContext = new WebAppContext();
-    	webAppContext.setContextPath(url.getPath());
-    	
-    	MockitoSpringConfiguration mockitoSpringConfiguration = new MockitoSpringConfiguration(); 
-    	mockitoSpringConfiguration.setContextBeans(defaultContextBeans);
-    	mockitoSpringConfiguration.setMockTargetBeans(serviceInterfaces);
+        
+        
+    	ServiceLoader<MockitoEndpointServerInstance> loader = ServiceLoader.load(MockitoEndpointServerInstance.class);
+    	Iterator<MockitoEndpointServerInstance> iterator = loader.iterator();
+    	if(!iterator.hasNext()) {
+    		throw new IllegalArgumentException("Expected implementation of " + MockitoEndpointServerInstance.class.getName() + ", found none");
+    	}
+    	MockitoEndpointServerInstance server = iterator.next();
+        
+    	Map<Class<?>, Object> add = server.add(serviceInterfaces, contextBeans, url);
 
-    	JettyMockitoSpringConfiguration configuration = new JettyMockitoSpringConfiguration(mockitoSpringConfiguration);
+    	servers.add(server);
     	
-    	webAppContext.setConfigurations(new org.eclipse.jetty.webapp.Configuration[] { configuration });
-    	webAppContext.setParentLoaderPriority(false);
-    	
-    	webAppContext.setClassLoader(mockitoEndpointServiceFactory.getClassLoader());
-    	
-    	Server server = new Server(url.getPort());
-        server.setHandler(webAppContext);
-
-        servers.add(server);
-
        	server.start();
 
-        return mockitoSpringConfiguration.getAll();
+        return add;
     }
     
     public <T> T mock(Class<T> serviceInterface, String baseAddress) throws Exception {
@@ -163,7 +156,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
      */
 
     public void destroy() throws Exception {
-        for (Server endpointImpl : servers) {
+        for (MockitoEndpointServerInstance endpointImpl : servers) {
             endpointImpl.stop();
         }
     }
@@ -175,7 +168,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
      */
 
     public void stop() throws Exception {
-        for (Server endpointImpl : servers) {
+        for (MockitoEndpointServerInstance endpointImpl : servers) {
             endpointImpl.stop();
         }
     }
@@ -187,7 +180,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
      */
 
     public void start() throws Exception {
-        for (Server endpointImpl : servers) {
+        for (MockitoEndpointServerInstance endpointImpl : servers) {
             endpointImpl.start();
         }
     }

@@ -56,6 +56,12 @@ ParameterResolver {
     	server = iterator.next();
 	}
     
+    public MockitoEndpointExtension(MockitoEndpointServerInstance server) {
+    	this(Arrays.<Class<?>>asList(DefaultSpringWebMvcConfig.class));
+    	
+    	this.server = server;
+	}    
+    
     public MockitoEndpointExtension(List<Class<?>> contextBeans) {
     	this.defaultContextBeans = contextBeans;
 	}

@@ -11,4 +11,20 @@
 	<name>junit5-undertow</name>
 	<packaging>jar</packaging>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
+			<artifactId>undertow</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
+			<artifactId>core-junit5</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
+			<artifactId>test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
 </project>

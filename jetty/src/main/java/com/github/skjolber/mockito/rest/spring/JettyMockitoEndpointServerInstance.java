@@ -10,6 +10,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class JettyMockitoEndpointServerInstance implements MockitoEndpointServerInstance {
 
+	protected boolean started = true;
 	protected List<Server> servers = new ArrayList<Server>();
     
     /**
@@ -19,11 +20,15 @@ public class JettyMockitoEndpointServerInstance implements MockitoEndpointServer
      */
 
     public void stop() throws Exception {
-        for (Server endpointImpl : servers) {
-            endpointImpl.stop();
-        }
+    	if(started) {
+    		started = false;
+    		
+	        for (Server server : servers) {
+	        	server.stop();
+	        }
+    	}
     }
-
+    	
     /**
      * 
      * (Re)start endpoints.
@@ -31,9 +36,12 @@ public class JettyMockitoEndpointServerInstance implements MockitoEndpointServer
      */
 
     public void start() throws Exception {
-        for (Server endpointImpl : servers) {
-            endpointImpl.start();
-        }
+    	if(!started) {
+    		started = true;
+	        for (Server server : servers) {
+	        	server.start();
+	        }
+    	}
     }
 
 	public Map<Class<?>, Object> add(List<Class<?>> mockTargetBeans, List<Class<?>> defaultContextBeans, URL url) throws Exception {

@@ -11,4 +11,19 @@
 	<name>junit4-jetty</name>
 	<packaging>jar</packaging>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
+			<artifactId>jetty</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
+			<artifactId>core-junit4</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
+			<artifactId>test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>
