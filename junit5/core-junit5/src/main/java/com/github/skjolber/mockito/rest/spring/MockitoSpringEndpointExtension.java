@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
+ * 
  * This extension combines {@linkplain SpringExtension} and {@linkplain TenantJsonWebToken}; in the correct order.
  *
  */
@@ -27,25 +28,23 @@ public class MockitoSpringEndpointExtension implements BeforeAllCallback, AfterA
     
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return mockitoEndpointExtension.supportsParameter(parameterContext, extensionContext) || springExtension.supportsParameter(parameterContext, extensionContext);
+        return springExtension.supportsParameter(parameterContext, extensionContext);
     }
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        Object parameter = mockitoEndpointExtension.resolveParameter(parameterContext, extensionContext);
-        if(parameter != null) {
-            return parameter;
-        }
         return springExtension.resolveParameter(parameterContext, extensionContext);
     }
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
+    	mockitoEndpointExtension.afterTestExecution(context);
         springExtension.afterTestExecution(context);
     }
 
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
+    	mockitoEndpointExtension.beforeTestExecution(context);
         springExtension.beforeTestExecution(context);
     }
 
@@ -63,6 +62,7 @@ public class MockitoSpringEndpointExtension implements BeforeAllCallback, AfterA
 
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
+    	mockitoEndpointExtension.postProcessTestInstance(testInstance, context);
         springExtension.postProcessTestInstance(testInstance, context);
     }
 

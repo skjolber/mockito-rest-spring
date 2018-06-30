@@ -62,11 +62,11 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 	}
 
 	public Map<Class<?>, Object> add(List<Class<?>> mockTargetBeans, List<Class<?>> defaultContextBeans, URL url) throws Exception {
-		MockitoSpringConfiguration configuration = new MockitoSpringConfiguration();
+		MockitoSpringApplicationListener configuration = new MockitoSpringApplicationListener();
 		configuration.setContextBeans(defaultContextBeans);
 		configuration.setMockTargetBeans(mockTargetBeans);
 
-		MockitoSpringFactoryWebApplicationContext dispatcherContext = new MockitoSpringFactoryWebApplicationContext(mockTargetBeans);
+		MockitoSpringWebApplicationContext dispatcherContext = new MockitoSpringWebApplicationContext(mockTargetBeans);
 
 		// web config must be loaded after beans
 		for(Class<?> bean : defaultContextBeans) {
@@ -84,7 +84,7 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		return configuration.getAll();
 	}
 
-	private Undertow configureUndertow(MockitoSpringFactoryWebApplicationContext context, URL url) throws ServletException {
+	private Undertow configureUndertow(MockitoSpringWebApplicationContext context, URL url) throws ServletException {
 		// https://github.com/yarosla/spring-undertow/blob/master/src/main/java/ys/undertow/UndertowMain.java
 		DeploymentInfo servletBuilder = Servlets.deployment()
 				.setClassLoader(Undertow.class.getClassLoader())

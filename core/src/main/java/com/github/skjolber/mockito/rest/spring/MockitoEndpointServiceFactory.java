@@ -16,7 +16,7 @@ import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 public class MockitoEndpointServiceFactory {
 	
 	protected List<Class<?>> beans = new ArrayList<>();
-	protected ClassLoader classLoader = new ByteArrayClassLoader(getClass().getClassLoader(), false, Collections.emptyMap());
+	protected ClassLoader classLoader = new ByteArrayClassLoader(getClass().getClassLoader(), Collections.emptyMap());
 	
 	public <T> Class<T> add(Class<T> serviceClass) throws Exception {
 		return add(serviceClass, null);

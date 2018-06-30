@@ -5,16 +5,16 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class JettyMockitoSpringConfiguration extends AbstractConfiguration  {
 
-	protected MockitoSpringConfiguration mockitoSpringConfiguration;
+	protected MockitoSpringApplicationListener configuration;
 	
-	public JettyMockitoSpringConfiguration(MockitoSpringConfiguration mockitoSpringConfiguration) {
-		this.mockitoSpringConfiguration = mockitoSpringConfiguration;
+	public JettyMockitoSpringConfiguration(MockitoSpringApplicationListener configuration) {
+		this.configuration = configuration;
 	}
 
 	@Override
 	public void configure(WebAppContext context) throws Exception {
 		//add a bean to the context which will call the servletcontainerinitializers when appropriate
-		JettyMockitoSpringContainerStarter starter = new JettyMockitoSpringContainerStarter(context, mockitoSpringConfiguration.getMockTargetBeans(), mockitoSpringConfiguration.getContextBeans(), mockitoSpringConfiguration);
+		JettyMockitoSpringContainerStarter starter = new JettyMockitoSpringContainerStarter(context, configuration.getMockTargetBeans(), configuration.getContextBeans(), configuration);
         context.addBean(starter, true);
 	}
 	

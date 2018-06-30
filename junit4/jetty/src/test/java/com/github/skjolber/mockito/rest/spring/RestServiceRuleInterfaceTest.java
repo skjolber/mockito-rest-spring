@@ -6,7 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.Arrays;
 
 import org.junit.Before;
@@ -64,7 +64,7 @@ public class RestServiceRuleInterfaceTest {
 
 		when((serviceMock).addPet(ArgumentMatchers.any(Pet.class))).thenReturn(entity);
 
-		URL u1 = new URL(baseUrl + "/rest/pet");
+		URI u1 = new URI(baseUrl + "/rest/pet");
 
 		Pet inputPet = new Pet();
 		inputPet.setName("input");
@@ -73,7 +73,7 @@ public class RestServiceRuleInterfaceTest {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		headers.setContentType(MediaType.APPLICATION_JSON); // avoid 415, this can probably be skipped in a future version of swagger-codegen
 		
-		ResponseEntity<Pet> responseEntity = restTemplate.exchange(u1.toURI(), HttpMethod.POST, new HttpEntity<>(inputPet, headers), Pet.class);
+		ResponseEntity<Pet> responseEntity = restTemplate.exchange(u1, HttpMethod.POST, new HttpEntity<>(inputPet, headers), Pet.class);
 		
 		assertThat(responseEntity.getBody().getId(), is(outputPet.getId()));
 

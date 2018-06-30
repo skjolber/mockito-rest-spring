@@ -6,7 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.net.URL;
+import java.net.URI;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,7 +38,7 @@ public class RestServiceRule1Test {
 	private RestTemplate restTemplate = new RestTemplate();
 	
 	private ResponseEntityMapper mapper = new ResponseEntityMapper();
-	
+
 	@Before
 	public void before() throws Exception {
 		serviceMock = rule.mock(MyRestController.class, baseUrl);
@@ -58,9 +58,9 @@ public class RestServiceRule1Test {
 		
 		when(serviceMock.method1()).thenReturn(entity);
 		
-		URL u1 = new URL(baseUrl + "/rest/method1");
+		URI u1 = new URI(baseUrl + "/rest/method1");
 		
-		ResponseEntity<String> responseEntity = restTemplate.getForEntity(u1.toURI(), String.class);
+		ResponseEntity<String> responseEntity = restTemplate.getForEntity(u1, String.class);
 		
 		assertThat(responseEntity.getBody(), is(message));
 	}
@@ -79,9 +79,9 @@ public class RestServiceRule1Test {
 		
 		when(serviceMock.method2()).thenReturn(expected);
 		
-		URL u1 = new URL(baseUrl + "/rest/method2");
+		URI u1 = new URI(baseUrl + "/rest/method2");
 		
-		ResponseEntity<MyResponse> responseEntity = restTemplate.getForEntity(u1.toURI(), MyResponse.class);
+		ResponseEntity<MyResponse> responseEntity = restTemplate.getForEntity(u1, MyResponse.class);
 
 		MyResponse body = responseEntity.getBody();
 		
@@ -103,13 +103,13 @@ public class RestServiceRule1Test {
 		
 		when(serviceMock.method3(ArgumentMatchers.any(MyRequest.class))).thenReturn(expected);
 		
-		URL u1 = new URL(baseUrl + "/rest/method3");
+		URI u1 = new URI(baseUrl + "/rest/method3");
 		
 		MyRequest request = new MyRequest();
 		request.setCode(1);
 		request.setValue("abc");
 		
-		ResponseEntity<MyResponse> responseEntity = restTemplate.postForEntity(u1.toURI(), request, MyResponse.class);
+		ResponseEntity<MyResponse> responseEntity = restTemplate.postForEntity(u1, request, MyResponse.class);
 
 		MyResponse body = responseEntity.getBody();
 		
@@ -123,9 +123,7 @@ public class RestServiceRule1Test {
 		
 		assertThat(value.getCode(), is(request.getCode()));
 		assertThat(value.getValue(), is(request.getValue()));
-
 	}
-	
 	
 	/**
 	 * GET method returning an {@linkplain ResponseEntity} using the response entity mapper.
@@ -137,9 +135,9 @@ public class RestServiceRule1Test {
 	public void testMethod4() throws Exception {
 		when(serviceMock.method4()).thenReturn(mapper.response("/examples/myResponse.json", MyResponse.class));
 		
-		URL u1 = new URL(baseUrl + "/rest/method4");
+		URI u1 = new URI(baseUrl + "/rest/method4");
 		
-		ResponseEntity<MyResponse> responseEntity = restTemplate.getForEntity(u1.toURI(), MyResponse.class);
+		ResponseEntity<MyResponse> responseEntity = restTemplate.getForEntity(u1, MyResponse.class);
 
 		MyResponse body = responseEntity.getBody();
 		
@@ -151,11 +149,11 @@ public class RestServiceRule1Test {
 	public void testMethodWithResponseHeaders() throws Exception {
 		when(serviceMock.method4()).thenReturn(mapper.response("/examples/myResponse.json", MyResponse.class, "myHeader", "myValue"));
 		
-		URL u1 = new URL(baseUrl + "/rest/method4");
+		URI u1 = new URI(baseUrl + "/rest/method4");
 		
 		Thread.sleep(1000);
 
-		ResponseEntity<MyResponse> responseEntity = restTemplate.getForEntity(u1.toURI(), MyResponse.class);
+		ResponseEntity<MyResponse> responseEntity = restTemplate.getForEntity(u1, MyResponse.class);
 
 		MyResponse body = responseEntity.getBody();
 		
@@ -163,7 +161,6 @@ public class RestServiceRule1Test {
 		assertThat(body.getValue(), is("ghi"));
 		assertThat(responseEntity.getHeaders().get("myHeader").get(0), is("myValue"));
 	}
-	
 	
 	/**
 	 * 
@@ -177,9 +174,9 @@ public class RestServiceRule1Test {
 		when(serviceMock.method1()).thenThrow(new MyException());
 		when(serviceMock.handleException(ArgumentMatchers.any(MyException.class))).thenCallRealMethod();
 		
-		URL u1 = new URL(baseUrl + "/rest/method1");
+		URI u1 = new URI(baseUrl + "/rest/method1");
 		
-		RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, u1.toURI());
+		RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, u1);
 		
 		try {
 			ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
@@ -192,6 +189,4 @@ public class RestServiceRule1Test {
 		    assertThat(statusCode, is(400));
 		}
 	}
-	
-
 }

@@ -17,16 +17,14 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
+import org.mockito.Mockito;
+
 import com.github.skjolber.mockito.rest.spring.api.MockEndpoint;
 import com.github.skjolber.mockito.rest.spring.mockito.MockEndpointFieldHelper;
 
 public class MockitoEndpointExtension implements BeforeAllCallback, AfterAllCallback, TestInstancePostProcessor,
-BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback,
-ParameterResolver {
+BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
     private static final String PORT_NAME = "mockitoRestSpringServerPort";
     
@@ -38,15 +36,19 @@ ParameterResolver {
     	return Integer.parseInt(property);
     }
     
-	private PortReservations portReservations;
-    private MockitoEndpointServiceFactory serviceFactory = new MockitoEndpointServiceFactory();
+	protected MockitoEndpointServiceFactory serviceFactory = new MockitoEndpointServiceFactory();
     
     /** beans added to the Spring context */
-    private List<Class<?>> defaultContextBeans;
-	private MockitoEndpointServerInstance server;
+    protected List<Class<?>> defaultContextBeans;
+    protected MockitoEndpointServerInstance server;
+	
+	protected boolean postProcessed = false;
+	protected Map<Field, Object> setters;
+
+	protected PortReservations portReservations;
     
     public MockitoEndpointExtension() {
-    	this(Arrays.<Class<?>>asList(DefaultSpringWebMvcConfig.class));
+    	this(Arrays.<Class<?>>asList(MockitoEndpointWebMvcConfig.class));
     	
     	ServiceLoader<MockitoEndpointServerInstance> loader = ServiceLoader.load(MockitoEndpointServerInstance.class);
     	Iterator<MockitoEndpointServerInstance> iterator = loader.iterator();
@@ -57,7 +59,7 @@ ParameterResolver {
 	}
     
     public MockitoEndpointExtension(MockitoEndpointServerInstance server) {
-    	this(Arrays.<Class<?>>asList(DefaultSpringWebMvcConfig.class));
+    	this(Arrays.<Class<?>>asList(MockitoEndpointWebMvcConfig.class));
     	
     	this.server = server;
 	}    
@@ -67,78 +69,85 @@ ParameterResolver {
 	}
 
 	@Override
-	public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
-			throws ParameterResolutionException {
-		return false;
-	}
-
-	@Override
-	public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
-			throws ParameterResolutionException {
-		throw new RuntimeException();
-	}
-
-	@Override
 	public void afterTestExecution(ExtensionContext context) throws Exception {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void beforeTestExecution(ExtensionContext context) throws Exception {
-		
 	}
 
 	@Override
 	public void afterEach(ExtensionContext context) throws Exception {
-		
+		for (Entry<Field, Object> entry : setters.entrySet()) {
+			Mockito.reset(entry.getValue());
+		}
 	}
 
 	@Override
 	public void beforeEach(ExtensionContext context) throws Exception {
-		
+		for (Entry<Field, Object> entry : setters.entrySet()) {
+			Mockito.reset(entry.getValue());
+		}		
 	}
 
 	@Override
 	public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
 		MockEndpointFieldHelper helper = new MockEndpointFieldHelper(testInstance, testInstance.getClass());
-		
-		Map<Class<?>, Field> fields = new HashMap<>();
-		for (Field field : helper.getFields()) {
-			
-			MockEndpoint annotation = field.getAnnotation(MockEndpoint.class);
-			if(annotation != null) {
+
+		if(!postProcessed) {
+			postProcessed = true;
+						
+			Map<Class<?>, Field> fields = new HashMap<>();
+			for (Field field : helper.getFields()) {
 				
-				String path = annotation.path();
-				if(path.isEmpty()) {
-					path = null;
+				MockEndpoint annotation = field.getAnnotation(MockEndpoint.class);
+				if(annotation != null) {
+					
+					String path = annotation.path();
+					if(path.isEmpty()) {
+						path = null;
+					}
+					
+					Class<?> service = serviceFactory.add(field.getType(), path);
+					fields.put(service, field);
 				}
-				
-				Class<?> service = serviceFactory.add(field.getType(), path);
-				fields.put(service, field);
 			}
+			
+			String address = String.format("http://localhost:%s", portReservations.getPorts().get(PORT_NAME));
+			
+			portReservations.release();
+			
+			Map<Class<?>, Object> mocksByClass = mock(address);
+			
+			Map<Field, Object> setters = new HashMap<>();
+			
+			for (Entry<Class<?>, Field> entry : fields.entrySet()) {
+				Object mock = mocksByClass.get(entry.getKey());
+				
+				setters.put(entry.getValue(), mock);
+			}
+			
+			this.setters = setters;
 		}
-		
-		String address = String.format("http://localhost:%s", portReservations.getPorts().get(PORT_NAME));
-		
-		Map<Class<?>, Object> mocks = mock(address);
-		
-		for (Entry<Class<?>, Field> entry : fields.entrySet()) {
-			helper.setField(entry.getValue(), mocks.get(entry.getKey()));
+
+		for (Entry<Field, Object> entry : setters.entrySet()) {
+			helper.setField(entry.getKey(), entry.getValue());
 		}
-		
 	}
 
 	@Override
 	public void afterAll(ExtensionContext context) throws Exception {
-		portReservations.stop();
+		// ideally clean up system property 'mockitoRestSpringServerPort' here, 
+		// but then we would always have to also reload the spring context
+		// for each new server (unit test class)
+		portReservations.release();
 		
 		server.stop();
 	}
 
 	@Override
 	public void beforeAll(ExtensionContext context) throws Exception {
-	    portReservations = new PortReservations(PORT_NAME);
+		portReservations = new PortReservations(PORT_NAME);
 		portReservations.start();
 	}
 	

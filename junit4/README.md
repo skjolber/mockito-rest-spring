@@ -17,7 +17,7 @@ where ${flavour}` is `tomcat`, `jetty` or `undertow`.
 
 
 # Usage
-If you prefer skipping to a full example, see [this unit test](../core/src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRule1Test.java). 
+If you prefer skipping to a full example, see [this unit test](tomcat/src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRule1Test.java). 
 
 # Basics
 In your JUnit test, create a `RestServiceRule`

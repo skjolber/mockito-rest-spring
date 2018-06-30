@@ -13,6 +13,7 @@ import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 public class JettyMockitoSpringContainerStarter extends AbstractLifeCycle implements ServletContextHandler.ServletContainerInitializerCaller {
 
@@ -42,13 +43,15 @@ public class JettyMockitoSpringContainerStarter extends AbstractLifeCycle implem
 		rootContext.setClassLoader(context.getClassLoader());
 
 		// Create the dispatcher servlet's Spring application context
-		MockitoSpringFactoryWebApplicationContext dispatcherContext = new MockitoSpringFactoryWebApplicationContext(mockTargetBeans);
+		MockitoSpringWebApplicationContext dispatcherContext = new MockitoSpringWebApplicationContext(mockTargetBeans);
 		dispatcherContext.setClassLoader(context.getClassLoader());
 		
 		// web config must be loaded after beans
 		for(Class<?> bean : contextBeans) {
 			dispatcherContext.register(bean);
 		}
+		
+		dispatcherContext.register(WebMvcConfigurationSupport.class);
 		
 		dispatcherContext.addApplicationListener(listener);
 		

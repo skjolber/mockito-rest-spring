@@ -68,7 +68,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     protected MockitoEndpointServiceFactory mockitoEndpointServiceFactory = new MockitoEndpointServiceFactory();
     		
     public RestServiceRule() {
-    	this(Arrays.<Class<?>>asList(DefaultSpringWebMvcConfig.class));
+    	this(Arrays.<Class<?>>asList(MockitoEndpointWebMvcConfig.class));
 	}
     
     public RestServiceRule(List<Class<?>> contextBeans) {

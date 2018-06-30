@@ -54,7 +54,6 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<junit.jupiter.version>5.2.0</junit.jupiter.version>
-		<junit.jupiter.version>5.2.0</junit.jupiter.version>
 		<junit.platform.version>1.2.0</junit.platform.version>
 		<junit.version>4.12</junit.version>
 
@@ -72,11 +71,11 @@
 		<undertow.version>1.4.25.Final</undertow.version>
 		<jackson.version>2.9.6</jackson.version>
 		<jackson.asl.version>1.9.13</jackson.asl.version>
-		<byte-buddy.version>1.8.12</byte-buddy.version>
+		<byte-buddy.version>1.7.11</byte-buddy.version>
 		<swagger-annotations-version>1.5.20</swagger-annotations-version>
 
 		<swagger.version>1.5.12</swagger.version>
-		<springfox.version>2.6.1</springfox.version>
+		<joda-time.version>2.9.7</joda-time.version>
 
 		<!-- plugins -->
 		<build-helper-maven-plugin.version>1.9.1</build-helper-maven-plugin.version>
@@ -250,7 +249,7 @@
 			<dependency>
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
-				<version>2.9.7</version>
+				<version>${joda-time.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
@@ -528,6 +527,7 @@
 		<module>undertow</module>
 		<module>junit4</module>
 		<module>junit5</module>
+		<module>examples/demo</module>
 	</modules>
 
 	<profiles>

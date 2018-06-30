@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -23,7 +24,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ResponseEntityMapper {
 
-	private ObjectMapper mapper; 
+	protected ObjectMapper mapper; 
 	
 	public ResponseEntityMapper() {
 		this(new ObjectMapper());
@@ -58,17 +59,20 @@ public class ResponseEntityMapper {
 	}
 
 	public <T> T unmarshallResource(String path, Class<T> cls) throws IOException {
-		File file = getResourceFile(path);
-		return unmarshallFile(file, cls);
+		InputStream in = getClass().getResourceAsStream(path);
+		if(in == null) {
+			throw new FileNotFoundException(path);
+		}
+		return unmarshallStream(in, cls);
 	}
 	
-	private File getResourceFile(String path) throws IOException {
-		URL directoryURL = getClass().getResource(path);
-		if(directoryURL == null) {
+	protected File getResourceFile(String path) throws IOException {
+		URL resource = getClass().getResource(path);
+		if(resource == null) {
 			throw new FileNotFoundException(path);
 		}
 		try {
-			return new File(directoryURL.toURI());
+			return new File(resource.toURI());
 		} catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
@@ -79,8 +83,10 @@ public class ResponseEntityMapper {
 			throw new FileNotFoundException(file.getCanonicalPath());
 		}
 
-		FileInputStream in = new FileInputStream(file);
-		
+		return unmarshallStream(new FileInputStream(file), cls);
+	}
+	
+	public <T> T unmarshallStream(InputStream in, Class<T> cls) throws IOException {
 		try {
 			return (T) mapper.readValue(new InputStreamReader(in, Charset.forName("UTF-8")), cls);
 		} finally {
@@ -88,11 +94,19 @@ public class ResponseEntityMapper {
 		}
 	}
 	
+	
 	public ObjectMapper getMapper() {
 		return mapper;
 	}
 
 	public <T> ResponseEntity<T> response(File file, Class<T> cls, Object ... headers) throws IOException {
+		if(!file.exists()) {
+			throw new FileNotFoundException(file.getCanonicalPath());
+		}
+		return response(new FileInputStream(file), cls, headers);
+	}
+
+	public <T> ResponseEntity<T> response(InputStream in, Class<T> cls, Object ... headers) throws IOException {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.setContentType(MediaType.APPLICATION_JSON);
 		
@@ -109,12 +123,16 @@ public class ResponseEntityMapper {
 			}
 		}
 		
-		T t = unmarshallFile(file, cls);
+		T t = unmarshallStream(in, cls);
 		
 		return new ResponseEntity<T>(t, responseHeaders, HttpStatus.OK);
 	}
 
-	public <T> ResponseEntity<T> response(String resource, Class<T> cls, Object ... headers) throws IOException {
-		return response(getResourceFile(resource), cls, headers);
+	public <T> ResponseEntity<T> response(String path, Class<T> cls, Object ... headers) throws IOException {
+		InputStream in = getClass().getResourceAsStream(path);
+		if(in == null) {
+			throw new FileNotFoundException(path);
+		}
+		return response(in, cls, headers);
 	}
 }

@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MockitoSpringFactoryBean implements FactoryBean<Object> {
 
 	@Autowired 
-	private MockitoSpringFactoryWebApplicationContext applicationContext;
+	protected MockitoSpringWebApplicationContext applicationContext;
 	
-	private String className;
+	protected String className;
 	
 	@Override
 	public Object getObject() throws Exception {
@@ -20,6 +20,9 @@ public class MockitoSpringFactoryBean implements FactoryBean<Object> {
 
 	@Override
 	public Class<?> getObjectType() {
+		if(applicationContext == null) {
+			return null;
+		}
 		Class<?> result = applicationContext.findClass(className);
 		if(result != null) {
 			return result;

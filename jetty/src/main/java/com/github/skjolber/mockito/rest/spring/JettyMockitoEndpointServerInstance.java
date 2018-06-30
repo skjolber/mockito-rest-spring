@@ -48,7 +48,7 @@ public class JettyMockitoEndpointServerInstance implements MockitoEndpointServer
     	WebAppContext webAppContext = new WebAppContext();
     	webAppContext.setContextPath(url.getPath());
 
-    	MockitoSpringConfiguration mockitoSpringConfiguration = new MockitoSpringConfiguration(); 
+    	MockitoSpringApplicationListener mockitoSpringConfiguration = new MockitoSpringApplicationListener(); 
     	mockitoSpringConfiguration.setContextBeans(defaultContextBeans);
     	mockitoSpringConfiguration.setMockTargetBeans(mockTargetBeans);
 

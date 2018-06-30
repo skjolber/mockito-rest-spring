@@ -48,8 +48,5 @@ public class ExtensionRestControllerTest {
 		
 		assertThat(responseEntity.getBody(), is(message));
 	}
-	
-	
-	
 
 }

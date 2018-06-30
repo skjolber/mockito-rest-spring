@@ -51,7 +51,7 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
     }
 
 	public Map<Class<?>, Object> add(List<Class<?>> mockTargetBeans, List<Class<?>> defaultContextBeans, URL url) throws Exception {
-    	MockitoSpringConfiguration configuration = new MockitoSpringConfiguration();
+		MockitoSpringApplicationListener configuration = new MockitoSpringApplicationListener();
     	configuration.setContextBeans(defaultContextBeans);
 		configuration.setMockTargetBeans(mockTargetBeans);
 
@@ -63,7 +63,7 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
     	// https://github.com/spring-projects/spring-boot/blob/master/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/web/embedded/tomcat/TomcatServletWebServerFactory.java
     	
 		// Create the dispatcher servlet's Spring application context
-		MockitoSpringFactoryWebApplicationContext dispatcherContext = new MockitoSpringFactoryWebApplicationContext(mockTargetBeans);
+    	MockitoSpringWebApplicationContext dispatcherContext = new MockitoSpringWebApplicationContext(mockTargetBeans);
 		
 		// web config must be loaded after beans
 		for(Class<?> bean : defaultContextBeans) {
@@ -73,9 +73,27 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
 		dispatcherContext.addApplicationListener(configuration);
 		
     	String contextPath = url.getPath();
-    	String docBase = new File(".").getAbsolutePath();
+    	
+    	String tempDir = System.getProperty("java.io.tmpdir");
 
-    	Context context = tomcat.addContext(contextPath, docBase);
+    	File rootFile = new File(tempDir, "tomcat");
+    	if(!rootFile.exists() && !rootFile.mkdirs()) {
+    		throw new RuntimeException("Unable to create directory " + rootFile);
+    	}
+    	
+    	File baseDir = new File(rootFile, "base");
+    	if(!baseDir.exists() && !baseDir.mkdir()) {
+    		throw new RuntimeException("Unable to create directory " + baseDir);
+    	}
+    	
+    	File docBase = new File(rootFile, "doc");
+    	if(!docBase.exists() && !docBase.mkdir()) {
+    		throw new RuntimeException("Unable to create directory " + docBase);
+    	}
+    	
+    	tomcat.setBaseDir(baseDir.getAbsolutePath());
+    	Context context = tomcat.addContext(contextPath, docBase.getAbsolutePath());
+    	
     	context.addLifecycleListener(new FixContextListener());
     	
         DispatcherServlet servlet = new DispatcherServlet(dispatcherContext);

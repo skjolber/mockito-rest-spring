@@ -1,20 +1,20 @@
 [![Build Status](https://travis-ci.org/skjolber/mockito-rest-spring.svg?branch=master)](https://travis-ci.org/skjolber/mockito-rest-spring)
 
 # mockito-rest-spring
-This utility supports unit testing applications which consume external REST services specified using Swagger/OpenAPI or RAML. 
+This utility supports __unit testing applications which consume external REST services__ defined using Swagger/OpenAPI, RAML or equivalent. 
 
-By running a code generator and mocking the resulting stubs, __full [Mockito] support for over-the-wire mocks is provided__.
+In a nutshell, mocking external REST services becomes __as simple as mocking any other bean__ using [Mockito].
 
 Users will benefit from
 
-  * full stack __integration-style testing__ - mocks are live on local ports using webserver instances
+  * full stack __integration-style testing__ - over-the-wire mocking on local ports. 
   * [Mockito] support - i.e. full method/type safety
   * simple setup using JUnit 
     * `@Rule` for [Junit 4](junit4)
     * `@Extension` for [JUnit 5](junit5)
   * Tomcat, Jetty & Undertow support
 
-The REST API must be available either in the form of an annotated interface or a concrete implemenation at compile time.
+The REST API must be available either in the form of an annotated interface or a concrete implemenation at compile time. This usually means running a code generator plugin to generate the stubs from your Swagger/OpenAPI definitions.
 
 While the primary target is __Spring-flavored REST__, there is really no constraints on using other implementations. 
 
@@ -51,7 +51,7 @@ or for JUnit 4
 # Usage
 The below is for JUnit 5. For JUnit 4 go [here](junit4).
 
-If you prefer skipping to a full example, see [this unit test](junit5/core-junit5/src/test/java/com/github/skjolber/mockito/rest/spring/ExtensionMultipleTest.java). 
+If you prefer skipping to a full example, see [this unit test](examples/demo/src/test/java/com/example/demo/DemoApplication1Test.java). 
 
 # Basics
 In your JUnit test, add a `MockitoSpringEndpointExtension` extension:

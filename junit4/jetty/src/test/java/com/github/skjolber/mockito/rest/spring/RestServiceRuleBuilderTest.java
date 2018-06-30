@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
-import java.net.URL;
+import java.net.URI;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -51,9 +51,9 @@ public class RestServiceRuleBuilderTest {
 		
 		when(serviceMock.method1()).thenReturn(entity);
 		
-		URL u1 = new URL(baseUrl + "/rest/method1");
+		URI u1 = new URI(baseUrl + "/rest/method1");
 		
-		ResponseEntity<String> responseEntity = restTemplate.getForEntity(u1.toURI(), String.class);
+		ResponseEntity<String> responseEntity = restTemplate.getForEntity(u1, String.class);
 		
 		assertThat(responseEntity.getBody(), is(message));
 	}

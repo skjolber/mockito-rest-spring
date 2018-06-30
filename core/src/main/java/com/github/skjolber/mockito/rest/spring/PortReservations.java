@@ -1,5 +1,6 @@
 package com.github.skjolber.mockito.rest.spring;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -76,9 +77,11 @@ public class PortReservations {
 		}
 		private final String propertyName;
 		private int port = -1;
+		private ServerSocket serverSocket;
 		
-		public void reserved(int port) {
+		public void reserved(int port, ServerSocket serverSocket) {
 			this.port = port;
+			this.serverSocket = serverSocket;
 			
 			System.setProperty(propertyName, Integer.toString(port));
 		}
@@ -87,9 +90,20 @@ public class PortReservations {
 			System.clearProperty(propertyName);
 			
 			this.port = -1;
+			
+			release();
 		}
 
 		public void start(Set<Integer> reserved) {
+			// check if the property already exists, if so then reserve capture that port
+			String property = System.getProperty(propertyName);
+			if(property != null) {
+				if(reserve(reserved, Integer.parseInt(property))) {
+					return;
+				} else {
+					throw new RuntimeException("Unable to reserve previously set port " + property + " for port name " + propertyName);
+				}
+			}
 			// systematically try ports in range
 			// starting at random offset
 			int portRange = portRangeEnd - portRangeStart + 1;
@@ -101,20 +115,28 @@ public class PortReservations {
 				if(reserved.contains(candidatePort)) {
 					continue;
 				}
-				try {
-					if(isPortAvailable(candidatePort)) {
-						reserved(candidatePort);
-						
-						reserved.add(candidatePort);
-						
-						return;
-					}
-				} catch(Exception e) {
-					// continue
+				if(reserve(reserved, candidatePort)) {
+					return;
 				}
 			}
 			throw new RuntimeException("Unable to reserve port for " + propertyName);
 			
+		}
+
+		private boolean reserve(Set<Integer> reserved, int candidatePort) {
+			try {
+				ServerSocket result = capturePort(candidatePort);
+				if(result != null) {
+					reserved(candidatePort, result);
+					
+					reserved.add(candidatePort);
+					
+					return true;
+				}
+			} catch(Exception e) {
+				// continue
+			}
+			return false;
 		}
 
 		public int getPort() {
@@ -125,16 +147,35 @@ public class PortReservations {
 			return propertyName;
 		}
 		
+		public boolean capture() {
+			if(serverSocket == null) {
+				serverSocket = capturePort(port);
+			}
+			
+			return serverSocket != null;
+		}
+		
+		public void release() {
+			ServerSocket serverSocket = this.serverSocket;
+			if(serverSocket != null) {
+				try {
+					serverSocket.close();
+				} catch (IOException e) {
+					// ignore
+				}
+				
+				this.serverSocket = null;
+			}
+		}
+		
 	}   
 	
-	protected static boolean isPortAvailable(int port) {
+	protected static ServerSocket capturePort(int port) {
 		try {
-			ServerSocket serverSocket = ServerSocketFactory.getDefault().createServerSocket(port, 1, InetAddress.getByName("localhost"));
-			serverSocket.close();
-			return true;
+			return ServerSocketFactory.getDefault().createServerSocket(port, 1, InetAddress.getByName("localhost"));
 		}
 		catch (Exception ex) {
-			return false;
+			return null;
 		}
 	}
 
@@ -151,4 +192,17 @@ public class PortReservations {
 			reservation.stop();
 		}
 	}
+	
+	public void release() {
+		for(PortReservation reservation : reservations) {
+			reservation.release();
+		}
+	}
+	
+	public void capture() {
+		for(PortReservation reservation : reservations) {
+			reservation.capture();
+		}
+	}
+
 }
