@@ -1,13 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
-    <parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
 		<groupId>com.github.skjolber.mockito-rest-spring</groupId>
 		<artifactId>mockito-rest-spring-parent</artifactId>
 		<version>1.0.3-SNAPSHOT</version>
-    </parent>
-    
-    <packaging>jar</packaging>
+	</parent>
+
+	<packaging>jar</packaging>
 	<artifactId>core</artifactId>
 	<name>core</name>
 
@@ -21,7 +23,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -39,13 +41,13 @@
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>net.bytebuddy</groupId>
-		    <artifactId>byte-buddy</artifactId>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>net.bytebuddy</groupId>
-		    <artifactId>byte-buddy-agent</artifactId>
-		</dependency>		
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy-agent</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -72,9 +74,9 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
-    <build>
-    	<plugins>
+
+	<build>
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -98,7 +100,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>    	
-    	</plugins>
-    </build>	
+			</plugin>
+		</plugins>
+	</build>
 </project>

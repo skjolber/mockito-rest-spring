@@ -1,28 +1,30 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
-    <parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
 		<groupId>com.github.skjolber.mockito-rest-spring</groupId>
 		<artifactId>mockito-rest-spring-parent</artifactId>
 		<version>1.0.3-SNAPSHOT</version>
-    </parent>
-    
-    <artifactId>junit5-parent</artifactId>
+	</parent>
+
+	<artifactId>junit5-parent</artifactId>
 	<name>junit5-parent</name>
 	<packaging>pom</packaging>
-	
+
 	<modules>
 		<module>core-junit5</module>
 		<module>tomcat</module>
 		<module>jetty</module>
 		<module>undertow</module>
 	</modules>
-	
+
 	<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>				
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<dependencies>
 						<dependency>
@@ -31,9 +33,9 @@
 							<version>${junit.platform.version}</version>
 						</dependency>
 					</dependencies>
-				</plugin>		
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
-	
+
 </project>

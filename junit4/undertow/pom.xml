@@ -1,13 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
-    <parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
 		<groupId>com.github.skjolber.mockito-rest-spring</groupId>
 		<artifactId>junit4-parent</artifactId>
 		<version>1.0.3-SNAPSHOT</version>
-    </parent>
-    
-    <artifactId>junit4-undertow</artifactId>
+	</parent>
+
+	<artifactId>junit4-undertow</artifactId>
 	<name>junit4-undertow</name>
 	<packaging>jar</packaging>
 
@@ -29,6 +31,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
-		</dependency>			
+		</dependency>
 	</dependencies>
 </project>

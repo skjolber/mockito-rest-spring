@@ -1,13 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
-    <parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
 		<groupId>com.github.skjolber.mockito-rest-spring</groupId>
 		<artifactId>mockito-rest-spring-parent</artifactId>
 		<version>1.0.3-SNAPSHOT</version>
-    </parent>
-    
-    <packaging>jar</packaging>
+	</parent>
+
+	<packaging>jar</packaging>
 	<artifactId>tomcat</artifactId>
 	<name>tomcat</name>
 
@@ -17,20 +19,20 @@
 			<artifactId>core</artifactId>
 		</dependency>
 		<dependency>
-		  <groupId>javax.annotation</groupId>
-		  <artifactId>javax.annotation-api</artifactId>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
 		</dependency>
 		<dependency>
-		  <groupId>org.apache.tomcat.embed</groupId>
-		  <artifactId>tomcat-embed-core</artifactId>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-core</artifactId>
 		</dependency>
 		<dependency>
-		  <groupId>org.apache.tomcat.embed</groupId>
-		  <artifactId>tomcat-embed-el</artifactId>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-el</artifactId>
 		</dependency>
 		<dependency>
-		  <groupId>org.apache.tomcat.embed</groupId>
-		  <artifactId>tomcat-embed-websocket</artifactId>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-websocket</artifactId>
 		</dependency>
 	</dependencies>
 </project>
