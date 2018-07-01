@@ -1,5 +1,8 @@
 package com.github.skjolber.mockito.rest.spring;
 
+import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.MutablePropertyValues;
@@ -10,9 +13,16 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 public class MockitoSpringWebApplicationContext extends AnnotationConfigWebApplicationContext {
 
 	protected List<Class<?>> beans;
+	protected List<Object> mocks = new ArrayList<>();
 	
 	public MockitoSpringWebApplicationContext(List<Class<?>> beans) {
 		this.beans = beans;
+		
+		// mock now so that we do not get some silly classloader issues 
+		// when mocking inside web containers (especially for tomcat).
+		for(Class<?> c : beans) {
+			mocks.add(mock(c));
+		}
 	}
 
 	@Override
@@ -38,6 +48,17 @@ public class MockitoSpringWebApplicationContext extends AnnotationConfigWebAppli
 		for (Class<?> c : beans) {
 			if(name.equals(c.getName())) {
 				return c;
+			}
+		}
+		return null;
+	}
+	
+	public Object getMock(String name) {
+		for (int i = 0; i < beans.size(); i++) {
+			Class<?> c = beans.get(i);
+			
+			if(name.equals(c.getName())) {
+				return mocks.get(i);
 			}
 		}
 		return null;

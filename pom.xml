@@ -79,7 +79,6 @@
 
 		<!-- plugins -->
 		<build-helper-maven-plugin.version>1.9.1</build-helper-maven-plugin.version>
-		<jacoco-maven-plugin.version>0.7.8</jacoco-maven-plugin.version>
 		<nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
 		<maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
 		<maven-source-plugin.version>2.2.1</maven-source-plugin.version>
@@ -89,7 +88,7 @@
 		<maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
 		<jacoco-maven-plugin.version>0.7.8</jacoco-maven-plugin.version>
 		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-		<owasp-dependency-check.version>3.1.1</owasp-dependency-check.version>
+		<owasp-dependency-check.version>3.2.1</owasp-dependency-check.version>
 	</properties>
 
 	<dependencyManagement>
@@ -104,6 +103,11 @@
 				<artifactId>junit-jupiter-engine</artifactId>
 				<version>${junit.jupiter.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-api</artifactId>
+				<version>${junit.jupiter.version}</version>
+			</dependency>			
 			<dependency>
 				<groupId>org.junit.platform</groupId>
 				<artifactId>junit-platform-runner</artifactId>

@@ -15,17 +15,37 @@ public class JettyMockitoEndpointServerInstance implements MockitoEndpointServer
     
     /**
      * 
-     * Stop endpoints.
+     * Destroy endpoints.
      * 
      */
 
-    public void stop() throws Exception {
-    	if(started) {
+    public void destroy() throws Exception {
+    	synchronized(this) {
     		started = false;
     		
 	        for (Server server : servers) {
 	        	server.stop();
 	        }
+	        
+	        servers.clear();
+    	}
+    }
+	
+    /**
+     * 
+     * Stop endpoints.
+     * 
+     */
+
+    public void stop() throws Exception {
+    	synchronized(this) {
+	    	if(started) {
+	    		started = false;
+	    		
+		        for (Server server : servers) {
+		        	server.stop();
+		        }
+	    	}
     	}
     }
     	
@@ -36,11 +56,13 @@ public class JettyMockitoEndpointServerInstance implements MockitoEndpointServer
      */
 
     public void start() throws Exception {
-    	if(!started) {
-    		started = true;
-	        for (Server server : servers) {
-	        	server.start();
-	        }
+    	synchronized(this) {
+	    	if(!started) {
+	    		started = true;
+		        for (Server server : servers) {
+		        	server.start();
+		        }
+	    	}
     	}
     }
 

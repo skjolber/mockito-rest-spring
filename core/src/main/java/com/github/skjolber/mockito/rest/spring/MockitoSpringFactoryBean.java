@@ -11,11 +11,7 @@ public class MockitoSpringFactoryBean implements FactoryBean<Object> {
 	
 	@Override
 	public Object getObject() throws Exception {
-		Class<?> objectType = getObjectType();
-		if(objectType == null) {
-			throw new RuntimeException();
-		}
-		return org.mockito.Mockito.mock(objectType);
+		return applicationContext.getMock(className);
 	}
 
 	@Override
@@ -23,15 +19,7 @@ public class MockitoSpringFactoryBean implements FactoryBean<Object> {
 		if(applicationContext == null) {
 			return null;
 		}
-		Class<?> result = applicationContext.findClass(className);
-		if(result != null) {
-			return result;
-		}
-		try {
-			return Class.forName(className, false, applicationContext.getClassLoader());
-		} catch (ClassNotFoundException e) {
-			return null;
-		}
+		return applicationContext.findClass(className);
 	}
 
 	@Override

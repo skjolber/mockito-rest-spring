@@ -6,9 +6,11 @@ import java.util.Map;
 
 public interface MockitoEndpointServerInstance {
 
-	void stop() throws Exception;
+	void destroy() throws Exception;
 
 	void start() throws Exception;
+	
+	void stop() throws Exception;
 
 	Map<Class<?>, Object> add(List<Class<?>> mockTargetBeans, List<Class<?>> defaultContextBeans, URL address) throws Exception;
 }

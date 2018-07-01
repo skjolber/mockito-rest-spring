@@ -34,7 +34,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
 			if(beans.size() == 1) {
 				return (T) RestServiceRule.this.mock(beans.get(0), address);
 			} else {
-				return (T) RestServiceRule.this.mock(beans, address);
+				throw new IllegalArgumentException();
 			}
 		}
 		
@@ -65,7 +65,6 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     
     /** beans added to the spring context */
     protected List<Class<?>> defaultContextBeans;
-    protected MockitoEndpointServiceFactory mockitoEndpointServiceFactory = new MockitoEndpointServiceFactory();
     		
     public RestServiceRule() {
     	this(Arrays.<Class<?>>asList(MockitoEndpointWebMvcConfig.class));
@@ -78,24 +77,21 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
 	private List<MockitoEndpointServerInstance> servers = new ArrayList<MockitoEndpointServerInstance>();
 
 	/**
-	 * Create (and start) service endpoint with mock delegates. 
+	 * Create (and start) service endpoint with mock delegate. 
 	 * 
-	 * @param serviceInterfaces a list of desired service mocks
+	 * @param serviceInterface service mock
 	 * @param address base address, i.e. http://localhost:1234
+	 * @param contextBeans list of context beans
 	 * @return map of mocks
 	 * @throws Exception if a problem occurred
 	 */
-    public Map<Class<?>, Object> mock(List<Class<?>> serviceInterfaces, String address) throws Exception {
-    	return mock(serviceInterfaces, defaultContextBeans, address);
-    }
 
-    public Map<Class<?>, Object> mock(List<Class<?>> serviceInterfaces, List<Class<?>> contextBeans, String address) throws Exception {
+    public Map<Class<?>, Object> mock(Class<?> serviceInterface, List<Class<?>> contextBeans, String address) throws Exception {
         // wrap the evaluator mock in proxy
         URL url = new URL(address);
         if (!url.getHost().equals("localhost") && !url.getHost().equals("127.0.0.1")) {
             throw new IllegalArgumentException("Only local mocking is supported");
         }
-        
         
     	ServiceLoader<MockitoEndpointServerInstance> loader = ServiceLoader.load(MockitoEndpointServerInstance.class);
     	Iterator<MockitoEndpointServerInstance> iterator = loader.iterator();
@@ -104,11 +100,9 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     	}
     	MockitoEndpointServerInstance server = iterator.next();
         
-    	Map<Class<?>, Object> add = server.add(serviceInterfaces, contextBeans, url);
+    	Map<Class<?>, Object> add = server.add(Arrays.asList(serviceInterface), contextBeans, url);
 
     	servers.add(server);
-    	
-       	server.start();
 
         return add;
     }
@@ -121,18 +115,18 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     	return mock(serviceInterface, defaultContextBeans, baseAddress, path);
     }
 
-    public <T> T mock(Class<T> serviceInterface, List<Class<?>> contextBeans, String baseAddress, String path) throws Exception {
+    @SuppressWarnings("unchecked")
+	public <T> T mock(Class<T> serviceInterface, List<Class<?>> contextBeans, String baseAddress, String path) throws Exception {
+        MockitoEndpointServiceFactory mockitoEndpointServiceFactory = new MockitoEndpointServiceFactory();
+
     	if(path != null || serviceInterface.isInterface()) {
     		serviceInterface = mockitoEndpointServiceFactory.asService(serviceInterface, path);
     	}
-     	List<Class<?>> mockTargetBeans = new ArrayList<>();
-    	mockTargetBeans.add(serviceInterface);
-
-    	Map<Class<?>, Object> mock = mock(mockTargetBeans, contextBeans, baseAddress);
+    	Map<Class<?>, Object> mock = mock(serviceInterface, contextBeans, baseAddress);
     	
         T result = (T) mock.get(serviceInterface);
         if(result == null) {
-        	throw new RuntimeException(mock.toString() + " from " + mockTargetBeans);
+        	throw new RuntimeException(mock.toString() + " from " + serviceInterface);
         }
         return result;
     }
@@ -152,19 +146,20 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     /**
      * 
      * Destroy endpoints.
-     * 
+     * @throws Exception if a problem occurred
      */
 
     public void destroy() throws Exception {
         for (MockitoEndpointServerInstance endpointImpl : servers) {
-            endpointImpl.stop();
+            endpointImpl.destroy();
         }
+        servers.clear();
     }
 
     /**
      * 
      * Stop endpoints.
-     * 
+     * @throws Exception if a problem occurred
      */
 
     public void stop() throws Exception {
@@ -176,7 +171,7 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
     /**
      * 
      * (Re)start endpoints.
-     * 
+     * @throws Exception if a problem occurred
      */
 
     public void start() throws Exception {
@@ -188,7 +183,4 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
 	public Builder builder(String address) {
 		return new Builder(address);
 	}
-
-    
-
 }

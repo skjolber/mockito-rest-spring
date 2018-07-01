@@ -12,6 +12,7 @@ import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.dynamic.DynamicType.Loaded;
 import net.bytebuddy.dynamic.loading.ByteArrayClassLoader;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.dynamic.loading.MultipleParentClassLoader;
 
 public class MockitoEndpointServiceFactory {
 	
@@ -51,7 +52,7 @@ public class MockitoEndpointServiceFactory {
 	   		subclass = subclass.annotateType(AnnotationDescription.Builder.ofType(org.springframework.web.bind.annotation.RequestMapping.class).defineArray("path", new String[]{path}).build());
     	}
    		Loaded<T> load = subclass.make().load(classLoader, ClassLoadingStrategy.Default.INJECTION);
-
+   		
    		return (Class<T>) load.getLoaded();
     }
     

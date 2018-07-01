@@ -142,7 +142,7 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
 		// for each new server (unit test class)
 		portReservations.release();
 		
-		server.stop();
+		server.destroy();
 	}
 
 	@Override

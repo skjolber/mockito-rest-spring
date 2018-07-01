@@ -8,18 +8,23 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+
+import net.bytebuddy.dynamic.loading.MultipleParentClassLoader;
 
 /**
  * 
@@ -75,7 +80,7 @@ public class RestServiceRule1Test {
 	public void testMethod2() throws Exception {
 		MyResponse expected = new MyResponse();
 		expected.setCode(0);
-		expected.setValue("abc");
+		expected.setValue("abcdef");
 		
 		when(serviceMock.method2()).thenReturn(expected);
 		
@@ -188,5 +193,10 @@ public class RestServiceRule1Test {
 		    
 		    assertThat(statusCode, is(400));
 		}
+	}
+	
+	@After
+	public void reset() {
+		Mockito.reset(serviceMock);
 	}
 }

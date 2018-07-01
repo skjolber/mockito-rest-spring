@@ -1,9 +1,10 @@
 package com.github.skjolber.mockito.rest.spring.junit;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static com.google.common.truth.Truth.*;
+
 import java.net.URI;
 
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import com.github.skjolber.mockito.rest.spring.api.MockEndpoint;
 
 import io.swagger.api.PetApi;
 import io.swagger.model.Pet;
+
 
 /**
  * 

@@ -1,7 +1,6 @@
 package com.github.skjolber.mockito.rest.spring.junit;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
@@ -46,7 +45,7 @@ public class ExtensionRestControllerTest {
 		
 		ResponseEntity<String> responseEntity = restTemplate.getForEntity(u1, String.class);
 		
-		assertThat(responseEntity.getBody(), is(message));
+		assertThat(responseEntity.getBody()).isEqualTo(message);
 	}
 
 }

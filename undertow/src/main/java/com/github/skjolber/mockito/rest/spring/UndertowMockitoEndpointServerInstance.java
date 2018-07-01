@@ -32,16 +32,36 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 
 	/**
 	 * 
+	 * Destroy endpoints.
+	 * 
+	 */
+
+	public void destroy() throws Exception {
+		synchronized (this) {
+			started = false;
+
+			for (Undertow server : servers) {
+				server.stop();
+			}
+
+			servers.clear();
+		}
+	}
+	
+	/**
+	 * 
 	 * Stop endpoints.
 	 * 
 	 */
 
 	public void stop() throws Exception {
-		if(started) {
-			started = false;
-
-			for (Undertow server : servers) {
-				server.stop();
+		synchronized (this) {
+			if(started) {
+				started = false;
+	
+				for (Undertow server : servers) {
+					server.stop();
+				}
 			}
 		}
 	}
@@ -53,10 +73,12 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 	 */
 
 	public void start() throws Exception {
-		if(!started) {
-			started = true;
-			for (Undertow server : servers) {
-				server.start();
+		synchronized (this) {
+			if(!started) {
+				started = true;
+				for (Undertow server : servers) {
+					server.start();
+				}
 			}
 		}
 	}

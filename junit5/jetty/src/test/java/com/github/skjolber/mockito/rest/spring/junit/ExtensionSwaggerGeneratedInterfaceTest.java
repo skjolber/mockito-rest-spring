@@ -1,7 +1,6 @@
 package com.github.skjolber.mockito.rest.spring.junit;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -72,12 +71,12 @@ public class ExtensionSwaggerGeneratedInterfaceTest {
 		ResponseEntity<Pet> responseEntity = restTemplate.exchange(request, Pet.class);
 		
 		// verify calls
-		assertThat(responseEntity.getBody().getId(), is(outputPet.getId()));
+		assertThat(responseEntity.getBody().getId()).isEqualTo(outputPet.getId());
 
 		ArgumentCaptor<Pet> argument1 = ArgumentCaptor.forClass(Pet.class);
 		verify(petApi, times(1)).addPet(argument1.capture());
 		
-		assertThat(argument1.getValue().getName(), is(inputPet.getName()));
+		assertThat(argument1.getValue().getName()).isEqualTo(inputPet.getName());
 	}
 	
 	

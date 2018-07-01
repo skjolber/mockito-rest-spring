@@ -1,10 +1,14 @@
 package com.github.skjolber.mockito.rest.spring;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ServerSocketFactory;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
@@ -17,21 +21,59 @@ import org.springframework.web.servlet.DispatcherServlet;
 public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServerInstance {
 
 	protected boolean started = true;
+	
 	protected List<Tomcat> servers = new ArrayList<>();
+    protected List<Context> contexts = new ArrayList<>();
     
-	   /**
+	/**
      * 
      * Stop endpoints.
      * 
      */
 
     public void stop() throws Exception {
-    	if(started) {
+    	synchronized(this) {
+	    	if(started) {
+	    		started = false;
+	    		for (Context context : contexts) {
+	    			stop(context);
+	    		}
+	    		
+		        for (Tomcat server : servers) {
+		        	stop(server);
+		        }
+	    	}
+    	}
+    }    
+    
+	/**
+     * 
+     * Destroy endpoints.
+     * 
+     */
+
+    public void destroy() throws Exception {
+    	synchronized(this) {
     		started = false;
+    		
+    		for (Context context : contexts) {
+    			stop(context);
+    		}
+    		
+    		for (Context context : contexts) {
+    			destroy(context);
+    		}
     		
 	        for (Tomcat server : servers) {
 	        	stop(server);
 	        }
+
+	        for (Tomcat server : servers) {
+	        	destroy(server);
+	        }
+
+	        contexts.clear();
+	        servers.clear();
     	}
     }
     	
@@ -42,11 +84,13 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
      */
 
     public void start() throws Exception {
-    	if(!started) {
-    		started = true;
-	        for (Tomcat server : servers) {
-	        	start(server);
-	        }
+    	synchronized(this) {
+	    	if(!started) {
+	    		started = true;
+		        for (Tomcat server : servers) {
+		        	start(server);
+		        }
+	    	}
     	}
     }
 
@@ -111,6 +155,8 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
 		
         start(tomcat);
         
+        contexts.add(context);
+        
         if(tomcat.getServer().getState() == LifecycleState.STARTED) {
             return configuration.getAll();
         }
@@ -139,11 +185,64 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
 
     private void stop(Tomcat tomcat) throws LifecycleException, InterruptedException {
 		tomcat.stop();
+		
+		long deadline = System.currentTimeMillis() + 10000;
+		do {
+        	switch(tomcat.getServer().getState()) {
+        	case STOPPED:
+        	case DESTROYING:
+        	case DESTROYED:
+        	case FAILED:
+        		return;
+        	default : {
+        	}
+        	}
+    		Thread.sleep(10);
+        } while(deadline > System.currentTimeMillis());		
+	}
+    
+	    
+
+    private void stop(Context context) throws LifecycleException, InterruptedException {
+		context.stop();
+
+		long deadline = System.currentTimeMillis() + 10000;
+		do {
+        	switch(context.getState()) {
+        	case STOPPED:
+        	case DESTROYING:
+        	case DESTROYED:
+        	case FAILED:
+        		return;
+        	default : {
+        	}
+        	}
+    		Thread.sleep(10);
+        } while(deadline > System.currentTimeMillis());		
+	}	
+
+    private void destroy(Tomcat tomcat) throws LifecycleException, InterruptedException {
 		tomcat.destroy();
 		
 		long deadline = System.currentTimeMillis() + 10000;
 		do {
         	switch(tomcat.getServer().getState()) {
+        	case DESTROYED:
+        	case FAILED:
+        		return;
+        	default : {
+        	}
+        	}
+    		Thread.sleep(10);
+        } while(deadline > System.currentTimeMillis());		
+	}
+    
+    private void destroy(Context context) throws LifecycleException, InterruptedException {
+		context.destroy();
+
+		long deadline = System.currentTimeMillis() + 10000;
+		do {
+        	switch(context.getState()) {
         	case DESTROYED:
         	case FAILED:
         		return;
