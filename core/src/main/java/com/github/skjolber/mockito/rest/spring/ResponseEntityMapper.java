@@ -25,21 +25,21 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class ResponseEntityMapper {
 
 	protected ObjectMapper mapper; 
-	
+
 	public ResponseEntityMapper() {
 		this(new ObjectMapper());
 	}
-	
+
 	public ResponseEntityMapper(ObjectMapper mapper) {
 		this.mapper = mapper;
 	}
-	
+
 	public <T> T unmarshall(String json, Class<T> cls) throws IOException {
 		StringReader reader = new StringReader(json);
-		
+
 		return mapper.readValue(reader, cls);
 	}
-	
+
 	public String marshall(Object object, boolean prettyPrint) throws IOException {
 		StringWriter writer = new StringWriter();
 		if(prettyPrint) {
@@ -49,7 +49,7 @@ public class ResponseEntityMapper {
 		}
 		return writer.toString();
 	}
-	
+
 	public ObjectNode toNode(Object object) {
 		return mapper.valueToTree(object);
 	}
@@ -65,7 +65,7 @@ public class ResponseEntityMapper {
 		}
 		return unmarshallStream(in, cls);
 	}
-	
+
 	protected File getResourceFile(String path) throws IOException {
 		URL resource = getClass().getResource(path);
 		if(resource == null) {
@@ -85,7 +85,7 @@ public class ResponseEntityMapper {
 
 		return unmarshallStream(new FileInputStream(file), cls);
 	}
-	
+
 	public <T> T unmarshallStream(InputStream in, Class<T> cls) throws IOException {
 		try {
 			return (T) mapper.readValue(new InputStreamReader(in, Charset.forName("UTF-8")), cls);
@@ -93,8 +93,8 @@ public class ResponseEntityMapper {
 			in.close();
 		}
 	}
-	
-	
+
+
 	public ObjectMapper getMapper() {
 		return mapper;
 	}
@@ -109,7 +109,7 @@ public class ResponseEntityMapper {
 	public <T> ResponseEntity<T> response(InputStream in, Class<T> cls, Object ... headers) throws IOException {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.setContentType(MediaType.APPLICATION_JSON);
-		
+
 		if(headers != null) {
 			if(headers.length % 2 != 0) {
 				throw new IllegalArgumentException("Headers must be in key-value pairs");
@@ -122,9 +122,9 @@ public class ResponseEntityMapper {
 				} else throw new IllegalArgumentException("Unexpected value " + headers[i+1]);
 			}
 		}
-		
+
 		T t = unmarshallStream(in, cls);
-		
+
 		return new ResponseEntity<T>(t, responseHeaders, HttpStatus.OK);
 	}
 

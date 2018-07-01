@@ -5,5 +5,5 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 
 @Configuration
 public class MockitoEndpointWebMvcConfig extends WebMvcConfigurationSupport {
-    
+
 }

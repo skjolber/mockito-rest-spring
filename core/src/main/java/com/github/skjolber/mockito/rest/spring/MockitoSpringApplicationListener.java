@@ -23,7 +23,7 @@ public class MockitoSpringApplicationListener implements ApplicationListener<App
 	public void setContextBeans(List<Class<?>> contextBeans) {
 		this.contextBeans = contextBeans;
 	}
-	
+
 	public void setMockTargetBeans(List<Class<?>> mockTargetBeans) {
 		this.mockTargetBeans = mockTargetBeans;
 	}
@@ -34,7 +34,7 @@ public class MockitoSpringApplicationListener implements ApplicationListener<App
 			ApplicationContext applicationContext = event.getApplicationContext();
 			for(Class<?> bean : mockTargetBeans) {
 				Object value = applicationContext.getBean(bean);
-				
+
 				map.put(bean, value);
 			}
 		}
@@ -47,11 +47,11 @@ public class MockitoSpringApplicationListener implements ApplicationListener<App
 	public Map<Class<?>, Object> getAll() {
 		return map;
 	}
-	
+
 	public List<Class<?>> getContextBeans() {
 		return contextBeans;
 	}
-	
+
 	public List<Class<?>> getMockTargetBeans() {
 		return mockTargetBeans;
 	}

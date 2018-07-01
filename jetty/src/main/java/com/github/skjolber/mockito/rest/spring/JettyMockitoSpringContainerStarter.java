@@ -32,33 +32,33 @@ public class JettyMockitoSpringContainerStarter extends AbstractLifeCycle implem
 	public void doStart() {
 		Context container = context.getServletContext();
 		container.setExtendedListenerTypes(true);
-		
+
 		// Create the 'root' Spring application context
 		AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
 		// Manage the lifecycle of the root application context
-		
+
 		ContextLoaderListener contextLoaderListener = new ContextLoaderListener(rootContext);
 		container.addListener(contextLoaderListener);
-		
+
 		rootContext.setClassLoader(context.getClassLoader());
 
 		// Create the dispatcher servlet's Spring application context
 		MockitoSpringWebApplicationContext dispatcherContext = new MockitoSpringWebApplicationContext(mockTargetBeans);
 		dispatcherContext.setClassLoader(context.getClassLoader());
-		
+
 		// web config must be loaded after beans
 		for(Class<?> bean : contextBeans) {
 			dispatcherContext.register(bean);
 		}
-		
+
 		dispatcherContext.register(WebMvcConfigurationSupport.class);
-		
+
 		dispatcherContext.addApplicationListener(listener);
-		
+
 		// Register and map the dispatcher servlet
 		ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", new DispatcherServlet(dispatcherContext));
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping("/");
 	}
-	
+
 }

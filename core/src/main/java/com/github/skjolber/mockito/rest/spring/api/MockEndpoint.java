@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 public @interface MockEndpoint {
 
-	 public String path() default "";
+	public String path() default "";
 
 }

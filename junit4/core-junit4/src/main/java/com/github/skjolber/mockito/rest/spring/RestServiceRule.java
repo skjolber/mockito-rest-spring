@@ -17,27 +17,27 @@ import java.util.ServiceLoader;
 public class RestServiceRule extends org.junit.rules.ExternalResource {
 
 	public class Builder extends MockitoEndpointServiceFactory {
-		
+
 		public Builder(String address) {
 			this.address = address;
 		}
 
 		private String address;
-		
+
 		private List<Class<?>> contextBeans = new ArrayList<>(RestServiceRule.this.defaultContextBeans);
-		
+
 		public <T> T mock() throws Exception {
 			if(beans.isEmpty()) {
 				throw new IllegalArgumentException("No beans added");
 			}
-			
+
 			if(beans.size() == 1) {
 				return (T) RestServiceRule.this.mock(beans.get(0), address);
 			} else {
 				throw new IllegalArgumentException();
 			}
 		}
-		
+
 		public Builder service(Class<?> serviceClass) throws Exception {
 			return service(serviceClass, null);
 		}
@@ -49,29 +49,29 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
 
 		public Builder context(Class<?> context) {
 			contextBeans.add(context);
-			
+
 			return this;
 		}
 
 	}
-	
-    public static RestServiceRule newInstance() {
-        return new RestServiceRule();
-    }
+
+	public static RestServiceRule newInstance() {
+		return new RestServiceRule();
+	}
 
 	public static RestServiceRule newInstance(List<Class<?>> beans) {
-        return new RestServiceRule(beans);
-    }
-    
-    /** beans added to the spring context */
-    protected List<Class<?>> defaultContextBeans;
-    		
-    public RestServiceRule() {
-    	this(Arrays.<Class<?>>asList(MockitoEndpointWebMvcConfig.class));
+		return new RestServiceRule(beans);
 	}
-    
-    public RestServiceRule(List<Class<?>> contextBeans) {
-    	this.defaultContextBeans = contextBeans;
+
+	/** beans added to the spring context */
+	protected List<Class<?>> defaultContextBeans;
+
+	public RestServiceRule() {
+		this(Arrays.<Class<?>>asList(MockitoEndpointWebMvcConfig.class));
+	}
+
+	public RestServiceRule(List<Class<?>> contextBeans) {
+		this.defaultContextBeans = contextBeans;
 	}
 
 	private List<MockitoEndpointServerInstance> servers = new ArrayList<MockitoEndpointServerInstance>();
@@ -86,99 +86,99 @@ public class RestServiceRule extends org.junit.rules.ExternalResource {
 	 * @throws Exception if a problem occurred
 	 */
 
-    public Map<Class<?>, Object> mock(Class<?> serviceInterface, List<Class<?>> contextBeans, String address) throws Exception {
-        // wrap the evaluator mock in proxy
-        URL url = new URL(address);
-        if (!url.getHost().equals("localhost") && !url.getHost().equals("127.0.0.1")) {
-            throw new IllegalArgumentException("Only local mocking is supported");
-        }
-        
-    	ServiceLoader<MockitoEndpointServerInstance> loader = ServiceLoader.load(MockitoEndpointServerInstance.class);
-    	Iterator<MockitoEndpointServerInstance> iterator = loader.iterator();
-    	if(!iterator.hasNext()) {
-    		throw new IllegalArgumentException("Expected implementation of " + MockitoEndpointServerInstance.class.getName() + ", found none");
-    	}
-    	MockitoEndpointServerInstance server = iterator.next();
-        
-    	Map<Class<?>, Object> add = server.add(Arrays.asList(serviceInterface), contextBeans, url);
+	public Map<Class<?>, Object> mock(Class<?> serviceInterface, List<Class<?>> contextBeans, String address) throws Exception {
+		// wrap the evaluator mock in proxy
+		URL url = new URL(address);
+		if (!url.getHost().equals("localhost") && !url.getHost().equals("127.0.0.1")) {
+			throw new IllegalArgumentException("Only local mocking is supported");
+		}
 
-    	servers.add(server);
+		ServiceLoader<MockitoEndpointServerInstance> loader = ServiceLoader.load(MockitoEndpointServerInstance.class);
+		Iterator<MockitoEndpointServerInstance> iterator = loader.iterator();
+		if(!iterator.hasNext()) {
+			throw new IllegalArgumentException("Expected implementation of " + MockitoEndpointServerInstance.class.getName() + ", found none");
+		}
+		MockitoEndpointServerInstance server = iterator.next();
 
-        return add;
-    }
-    
-    public <T> T mock(Class<T> serviceInterface, String baseAddress) throws Exception {
-    	return mock(serviceInterface, defaultContextBeans, baseAddress, null);
-    }
-    
-    public <T> T mock(Class<T> serviceInterface, String baseAddress, String path) throws Exception {
-    	return mock(serviceInterface, defaultContextBeans, baseAddress, path);
-    }
+		Map<Class<?>, Object> add = server.add(Arrays.asList(serviceInterface), contextBeans, url);
 
-    @SuppressWarnings("unchecked")
+		servers.add(server);
+
+		return add;
+	}
+
+	public <T> T mock(Class<T> serviceInterface, String baseAddress) throws Exception {
+		return mock(serviceInterface, defaultContextBeans, baseAddress, null);
+	}
+
+	public <T> T mock(Class<T> serviceInterface, String baseAddress, String path) throws Exception {
+		return mock(serviceInterface, defaultContextBeans, baseAddress, path);
+	}
+
+	@SuppressWarnings("unchecked")
 	public <T> T mock(Class<T> serviceInterface, List<Class<?>> contextBeans, String baseAddress, String path) throws Exception {
-        MockitoEndpointServiceFactory mockitoEndpointServiceFactory = new MockitoEndpointServiceFactory();
+		MockitoEndpointServiceFactory mockitoEndpointServiceFactory = new MockitoEndpointServiceFactory();
 
-    	if(path != null || serviceInterface.isInterface()) {
-    		serviceInterface = mockitoEndpointServiceFactory.asService(serviceInterface, path);
-    	}
-    	Map<Class<?>, Object> mock = mock(serviceInterface, contextBeans, baseAddress);
-    	
-        T result = (T) mock.get(serviceInterface);
-        if(result == null) {
-        	throw new RuntimeException(mock.toString() + " from " + serviceInterface);
-        }
-        return result;
-    }
+		if(path != null || serviceInterface.isInterface()) {
+			serviceInterface = mockitoEndpointServiceFactory.asService(serviceInterface, path);
+		}
+		Map<Class<?>, Object> mock = mock(serviceInterface, contextBeans, baseAddress);
 
-    protected void before() throws Throwable {
-        super.before();
-    }
+		T result = (T) mock.get(serviceInterface);
+		if(result == null) {
+			throw new RuntimeException(mock.toString() + " from " + serviceInterface);
+		}
+		return result;
+	}
 
-    protected void after() {
-        try {
-            destroy();
-        } catch (Exception e) {
-            // ignore
-        }
-    }
+	protected void before() throws Throwable {
+		super.before();
+	}
 
-    /**
-     * 
-     * Destroy endpoints.
-     * @throws Exception if a problem occurred
-     */
+	protected void after() {
+		try {
+			destroy();
+		} catch (Exception e) {
+			// ignore
+		}
+	}
 
-    public void destroy() throws Exception {
-        for (MockitoEndpointServerInstance endpointImpl : servers) {
-            endpointImpl.destroy();
-        }
-        servers.clear();
-    }
+	/**
+	 * 
+	 * Destroy endpoints.
+	 * @throws Exception if a problem occurred
+	 */
 
-    /**
-     * 
-     * Stop endpoints.
-     * @throws Exception if a problem occurred
-     */
+	public void destroy() throws Exception {
+		for (MockitoEndpointServerInstance endpointImpl : servers) {
+			endpointImpl.destroy();
+		}
+		servers.clear();
+	}
 
-    public void stop() throws Exception {
-        for (MockitoEndpointServerInstance endpointImpl : servers) {
-            endpointImpl.stop();
-        }
-    }
+	/**
+	 * 
+	 * Stop endpoints.
+	 * @throws Exception if a problem occurred
+	 */
 
-    /**
-     * 
-     * (Re)start endpoints.
-     * @throws Exception if a problem occurred
-     */
+	public void stop() throws Exception {
+		for (MockitoEndpointServerInstance endpointImpl : servers) {
+			endpointImpl.stop();
+		}
+	}
 
-    public void start() throws Exception {
-        for (MockitoEndpointServerInstance endpointImpl : servers) {
-            endpointImpl.start();
-        }
-    }
+	/**
+	 * 
+	 * (Re)start endpoints.
+	 * @throws Exception if a problem occurred
+	 */
+
+	public void start() throws Exception {
+		for (MockitoEndpointServerInstance endpointImpl : servers) {
+			endpointImpl.start();
+		}
+	}
 
 	public Builder builder(String address) {
 		return new Builder(address);

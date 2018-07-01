@@ -26,46 +26,46 @@ import com.github.skjolber.mockito.rest.spring.mockito.MockEndpointFieldHelper;
 public class MockitoEndpointExtension implements BeforeAllCallback, AfterAllCallback, TestInstancePostProcessor,
 BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
-    private static final String PORT_NAME = "mockitoRestSpringServerPort";
-    
-    public static int getPort() {
-    	String property = System.getProperty(PORT_NAME);
-    	if(property == null) {
-    		throw new IllegalArgumentException("Port not set");
-    	}
-    	return Integer.parseInt(property);
-    }
-    
+	private static final String PORT_NAME = "mockitoRestSpringServerPort";
+
+	public static int getPort() {
+		String property = System.getProperty(PORT_NAME);
+		if(property == null) {
+			throw new IllegalArgumentException("Port not set");
+		}
+		return Integer.parseInt(property);
+	}
+
 	protected MockitoEndpointServiceFactory serviceFactory = new MockitoEndpointServiceFactory();
-    
-    /** beans added to the Spring context */
-    protected List<Class<?>> defaultContextBeans;
-    protected MockitoEndpointServerInstance server;
-	
+
+	/** beans added to the Spring context */
+	protected List<Class<?>> defaultContextBeans;
+	protected MockitoEndpointServerInstance server;
+
 	protected boolean postProcessed = false;
 	protected Map<Field, Object> setters;
 
 	protected PortReservations portReservations;
-    
-    public MockitoEndpointExtension() {
-    	this(Arrays.<Class<?>>asList(MockitoEndpointWebMvcConfig.class));
-    	
-    	ServiceLoader<MockitoEndpointServerInstance> loader = ServiceLoader.load(MockitoEndpointServerInstance.class);
-    	Iterator<MockitoEndpointServerInstance> iterator = loader.iterator();
-    	if(!iterator.hasNext()) {
-    		throw new IllegalArgumentException("Expected implementation of " + MockitoEndpointServerInstance.class.getName() + ", found none");
-    	}
-    	server = iterator.next();
+
+	public MockitoEndpointExtension() {
+		this(Arrays.<Class<?>>asList(MockitoEndpointWebMvcConfig.class));
+
+		ServiceLoader<MockitoEndpointServerInstance> loader = ServiceLoader.load(MockitoEndpointServerInstance.class);
+		Iterator<MockitoEndpointServerInstance> iterator = loader.iterator();
+		if(!iterator.hasNext()) {
+			throw new IllegalArgumentException("Expected implementation of " + MockitoEndpointServerInstance.class.getName() + ", found none");
+		}
+		server = iterator.next();
 	}
-    
-    public MockitoEndpointExtension(MockitoEndpointServerInstance server) {
-    	this(Arrays.<Class<?>>asList(MockitoEndpointWebMvcConfig.class));
-    	
-    	this.server = server;
+
+	public MockitoEndpointExtension(MockitoEndpointServerInstance server) {
+		this(Arrays.<Class<?>>asList(MockitoEndpointWebMvcConfig.class));
+
+		this.server = server;
 	}    
-    
-    public MockitoEndpointExtension(List<Class<?>> contextBeans) {
-    	this.defaultContextBeans = contextBeans;
+
+	public MockitoEndpointExtension(List<Class<?>> contextBeans) {
+		this.defaultContextBeans = contextBeans;
 	}
 
 	@Override
@@ -96,37 +96,37 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
 
 		if(!postProcessed) {
 			postProcessed = true;
-						
+
 			Map<Class<?>, Field> fields = new HashMap<>();
 			for (Field field : helper.getFields()) {
-				
+
 				MockEndpoint annotation = field.getAnnotation(MockEndpoint.class);
 				if(annotation != null) {
-					
+
 					String path = annotation.path();
 					if(path.isEmpty()) {
 						path = null;
 					}
-					
+
 					Class<?> service = serviceFactory.add(field.getType(), path);
 					fields.put(service, field);
 				}
 			}
-			
+
 			String address = String.format("http://localhost:%s", portReservations.getPorts().get(PORT_NAME));
-			
+
 			portReservations.release();
-			
+
 			Map<Class<?>, Object> mocksByClass = mock(address);
-			
+
 			Map<Field, Object> setters = new HashMap<>();
-			
+
 			for (Entry<Class<?>, Field> entry : fields.entrySet()) {
 				Object mock = mocksByClass.get(entry.getKey());
-				
+
 				setters.put(entry.getValue(), mock);
 			}
-			
+
 			this.setters = setters;
 		}
 
@@ -141,7 +141,7 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
 		// but then we would always have to also reload the spring context
 		// for each new server (unit test class)
 		portReservations.release();
-		
+
 		server.destroy();
 	}
 
@@ -150,7 +150,7 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
 		portReservations = new PortReservations(PORT_NAME);
 		portReservations.start();
 	}
-	
+
 	/**
 	 * Create (and start) service endpoint with mock delegates. 
 	 * 
@@ -159,36 +159,36 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
 	 * @throws Exception if a problem occurred
 	 */
 
-    public Map<Class<?>, Object> mock(String address) throws Exception {
-        // wrap the evaluator mock in proxy
-        URL url = new URL(address);
-        if (!url.getHost().equals("localhost") && !url.getHost().equals("127.0.0.1")) {
-            throw new IllegalArgumentException("Only local mocking is supported");
-        }
-        
-    	List<Class<?>> mockTargetBeans = serviceFactory.getBeans();
+	public Map<Class<?>, Object> mock(String address) throws Exception {
+		// wrap the evaluator mock in proxy
+		URL url = new URL(address);
+		if (!url.getHost().equals("localhost") && !url.getHost().equals("127.0.0.1")) {
+			throw new IllegalArgumentException("Only local mocking is supported");
+		}
 
-    	return server.add(mockTargetBeans, defaultContextBeans, url);
-    }
+		List<Class<?>> mockTargetBeans = serviceFactory.getBeans();
 
-    /**
-     * 
-     * Stop endpoints.
-     * @throws Exception if a problem occurred
-     */
+		return server.add(mockTargetBeans, defaultContextBeans, url);
+	}
 
-    public void stop() throws Exception {
-       	server.stop();
-    }
+	/**
+	 * 
+	 * Stop endpoints.
+	 * @throws Exception if a problem occurred
+	 */
 
-    /**
-     * 
-     * (Re)start endpoints.
-     * @throws Exception if a problem occurred
-     */
+	public void stop() throws Exception {
+		server.stop();
+	}
 
-    public void start() throws Exception {
-    	server.start();
-    }
-	
+	/**
+	 * 
+	 * (Re)start endpoints.
+	 * @throws Exception if a problem occurred
+	 */
+
+	public void start() throws Exception {
+		server.start();
+	}
+
 }

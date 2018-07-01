@@ -6,9 +6,9 @@ public class MockitoSpringFactoryBean implements FactoryBean<Object> {
 
 	@Autowired 
 	protected MockitoSpringWebApplicationContext applicationContext;
-	
+
 	protected String className;
-	
+
 	@Override
 	public Object getObject() throws Exception {
 		return applicationContext.getMock(className);
@@ -30,5 +30,5 @@ public class MockitoSpringFactoryBean implements FactoryBean<Object> {
 	public void setClassName(String className) {
 		this.className = className;
 	}
-	
+
 }

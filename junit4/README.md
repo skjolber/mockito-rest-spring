@@ -6,10 +6,10 @@ Example dependency config:
 
 ```xml
 <dependency>
-	<groupId>com.github.skjolber.mockito-rest-spring</groupId>
-	<artifactId>junit4-${flavour}</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
-	<scope>test</scope>
+    <groupId>com.github.skjolber.mockito-rest-spring</groupId>
+    <artifactId>junit4-${flavour}</artifactId>
+    <version>1.0.3-SNAPSHOT</version>
+    <scope>test</scope>
 </dependency>
 ```
 
