@@ -120,6 +120,7 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
 	private void start(Tomcat tomcat) throws InterruptedException, LifecycleException {
         tomcat.start();
 
+		long deadline = System.currentTimeMillis() + 10000;
 		do {
         	switch(tomcat.getServer().getState()) {
         	case NEW:
@@ -132,13 +133,15 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
         	default : break;
         	}
         	break;
-        } while(true);
+		} while(deadline > System.currentTimeMillis());
 	}
 	
 
     private void stop(Tomcat tomcat) throws LifecycleException, InterruptedException {
 		tomcat.stop();
 		tomcat.destroy();
+		
+		long deadline = System.currentTimeMillis() + 10000;
 		do {
         	switch(tomcat.getServer().getState()) {
         	case DESTROYED:
@@ -148,6 +151,6 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
         	}
         	}
     		Thread.sleep(10);
-        } while(true);		
+        } while(deadline > System.currentTimeMillis());		
 	}	
 }
