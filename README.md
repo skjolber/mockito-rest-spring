@@ -31,7 +31,7 @@ Example JUnit 5 dependency config:
 ```xml
 <dependency>
     <groupId>com.github.skjolber.mockito-rest-spring</groupId>
-    <artifactId>junit5-tomcat</artifactId>
+    <artifactId>junit5-${flavour}</artifactId>
     <version>1.0.3</version>
     <scope>test</scope>
 </dependency>
@@ -42,11 +42,13 @@ or for JUnit 4
 ```xml
 <dependency>
     <groupId>com.github.skjolber-mockito-rest-spring</groupId>
-    <artifactId>junit4-tomcat</artifactId>
+    <artifactId>junit4-${flavour}</artifactId>
     <version>1.0.3</version>
     <scope>test</scope>
 </dependency>
 ```
+
+where ${flavour}` is `tomcat`, `jetty` or `undertow`.
 
 # Usage
 The below is for JUnit 5. For JUnit 4 go [here](junit4).
@@ -84,7 +86,6 @@ Configure your client to pick up this value, for example via regular properties 
 ```
 my.server.url=http://localhost:${mockitoRestSpringServerPort}/rest/pet
 ```
-
 
 # Details
 Create mock response via code
