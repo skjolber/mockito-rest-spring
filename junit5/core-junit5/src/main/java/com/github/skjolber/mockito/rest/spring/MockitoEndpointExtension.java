@@ -154,7 +154,6 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
 	/**
 	 * Create (and start) service endpoint with mock delegates. 
 	 * 
-	 * @param serviceInterfaces a list of desired service mocks
 	 * @param address base address, i.e. http://localhost:1234
 	 * @return map of mocks
 	 * @throws Exception if a problem occurred
@@ -175,7 +174,7 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
     /**
      * 
      * Stop endpoints.
-     * 
+     * @throws Exception if a problem occurred
      */
 
     public void stop() throws Exception {
@@ -185,7 +184,7 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
     /**
      * 
      * (Re)start endpoints.
-     * 
+     * @throws Exception if a problem occurred
      */
 
     public void start() throws Exception {

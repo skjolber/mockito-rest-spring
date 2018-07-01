@@ -15,7 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * 
- * This extension combines {@linkplain SpringExtension} and {@linkplain TenantJsonWebToken}; in the correct order.
+ * This extension combines {@linkplain SpringExtension} and {@linkplain MockitoEndpointExtension}; in the correct order.
  *
  */
 

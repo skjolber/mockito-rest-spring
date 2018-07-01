@@ -383,7 +383,7 @@
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>${maven.jacoco.plugin.version}</version>
+					<version>${jacoco-maven-plugin.version}</version>
 					<executions>
 						<execution>
 							<id>default-prepare-agent</id>
@@ -501,9 +501,17 @@
 		</pluginManagement>
 		<!-- common plugins -->
 		<plugins>
-			<!-- <plugin> <groupId>org.owasp</groupId> <artifactId>dependency-check-maven</artifactId> 
-				<executions> <execution> <goals> <goal>check</goal> </goals> </execution> 
-				</executions> </plugin> -->
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -516,6 +524,18 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -527,7 +547,6 @@
 		<module>undertow</module>
 		<module>junit4</module>
 		<module>junit5</module>
-		<module>examples/demo</module>
 	</modules>
 
 	<profiles>
@@ -563,7 +582,9 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 
-			<!-- add example modules here -->
+			<modules>
+				<module>examples/demo</module>
+			</modules>
 		</profile>
 	</profiles>
 
