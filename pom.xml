@@ -1,10 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.skjolber.mockito-rest-spring</groupId>
 	<artifactId>mockito-rest-spring-parent</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.3</version>
 	<name>mockito-rest-spring-parent</name>
 	<description>REST web-service mocking utility for Spring using JUnit and Mockito</description>
 	<url>https://github.com/skjolber/mockito-rest-spring</url>
@@ -33,7 +31,7 @@
 		<connection>scm:git:git@github.com:skjolber/mockito-rest-spring.git</connection>
 		<developerConnection>scm:git:git@github.com:skjolber/mockito-rest-spring.git</developerConnection>
 		<url>git@github.com:skjolber/mockito-rest-spring.git</url>
-		<tag>HEAD</tag>
+		<tag>mockito-rest-spring-parent-1.0.3</tag>
 	</scm>
 
 	<issueManagement>
