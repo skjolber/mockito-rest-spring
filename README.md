@@ -62,7 +62,7 @@ In your JUnit test, add a `MockitoSpringEndpointExtension` extension:
 @ExtendWith(MockitoSpringEndpointExtension.class)
 ```
 
-and mock service endpoints by using
+removing any `SpringExtension` (it is included in the above extension to guarantee the right execution order). Then mock service endpoints by using
 
 ```java
 @MockEndpoint(path = "/rest")
