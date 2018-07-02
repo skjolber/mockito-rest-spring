@@ -7,7 +7,7 @@ In a nutshell, mocking external REST services becomes __as simple as mocking any
 
 Users will benefit from
 
-  * full stack __integration-style testing__ - over-the-wire mocking on local ports. 
+  * full-stack __integration-style unit testing__ - over-the-wire mocking on local ports. 
   * [Mockito] support - i.e. full method/type safety
   * simple setup using JUnit 
     * `@Rule` for [Junit 4](junit4)
@@ -48,7 +48,7 @@ or for JUnit 4
 </dependency>
 ```
 
-where ${flavour}` is `tomcat`, `jetty` or `undertow`.
+where `${flavour}` is `tomcat`, `jetty` or `undertow`.
 
 # Usage
 The below is for JUnit 5. For JUnit 4 go [here](junit4).
@@ -69,7 +69,7 @@ and mock service endpoints by using
 private MyRestService myRestService;
 ```
 
-where the `MyRestServic`e is either an interface or a concrete `@RestController` implementation. For a custom (or missing) class level [RequestMapping] use
+where the `MyRestService` is either an interface or a concrete `@RestController` implementation. For a custom (or missing) class level [RequestMapping] use
 
 ```java
 @MockEndpoint(path = "/rest")
@@ -124,7 +124,7 @@ assertThat(request.getCode(), is(1));
 ```
 
 # Alternatives
-While this project offers easy-to-setup testing, alternatives exist which offer more features and somewhat more fine-grained controls: 
+While this project offers easy-to-setup testing, you might suppliment your testing using the following projects: 
 
    * [Spring Mock MVC] - using RestTemplate clients
    * [WireMock]
