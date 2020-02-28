@@ -65,7 +65,7 @@
 		<slf4j.version>1.7.24</slf4j.version>
 
 		<jetty.version>9.4.11.v20180605</jetty.version>
-		<tomcat.version>9.0.30</tomcat.version>
+		<tomcat.version>9.0.31</tomcat.version>
 		<undertow.version>2.0.26.Final</undertow.version>
 		<jackson.version>2.9.10.1</jackson.version>
 		<jackson.asl.version>1.9.13</jackson.asl.version>
