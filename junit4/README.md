@@ -13,7 +13,7 @@ Example dependency config:
 </dependency>
 ```
 
-where ${flavour}` is `tomcat`, `jetty` or `undertow`.
+where ${flavour} is `tomcat`, `jetty` or `undertow`.
 
 
 # Usage
