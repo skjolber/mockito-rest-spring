@@ -57,7 +57,7 @@
 
 		<mockito.version>2.19.0</mockito.version>
 		<hamcrest.version>1.3</hamcrest.version>
-		<commons.io.version>2.6</commons.io.version>
+		<commons.io.version>2.7</commons.io.version>
 		<truth.version>0.41</truth.version>
 
 		<spring.version>5.2.3.RELEASE</spring.version>
