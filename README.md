@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/skjolber/mockito-rest-spring.svg?branch=master)](https://travis-ci.org/skjolber/mockito-rest-spring)
-
 # mockito-rest-spring
 This utility supports __unit testing applications which consume external REST services__ defined using Swagger/OpenAPI, RAML or equivalent. 
 
