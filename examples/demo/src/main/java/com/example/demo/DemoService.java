@@ -3,6 +3,7 @@ package com.example.demo;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.openapitools.model.Pet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -11,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
-import io.swagger.model.Pet;
 
 /**
  * 

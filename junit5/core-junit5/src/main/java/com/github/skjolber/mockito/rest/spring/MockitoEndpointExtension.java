@@ -85,6 +85,8 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
 
 	@Override
 	public void beforeEach(ExtensionContext context) throws Exception {
+		server.start();
+
 		for (Entry<Field, Object> entry : setters.entrySet()) {
 			Mockito.reset(entry.getValue());
 		}		

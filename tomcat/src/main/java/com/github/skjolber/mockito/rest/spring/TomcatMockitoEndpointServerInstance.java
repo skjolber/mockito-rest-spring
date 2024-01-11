@@ -10,13 +10,11 @@ import java.util.Map;
 
 import javax.net.ServerSocketFactory;
 
-import org.apache.catalina.Context;
-import org.apache.catalina.LifecycleException;
-import org.apache.catalina.LifecycleState;
-import org.apache.catalina.Wrapper;
+import org.apache.catalina.*;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.startup.Tomcat.FixContextListener;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.apache.catalina.connector.Connector;
 
 public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServerInstance {
 
@@ -100,9 +98,12 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
 		configuration.setMockTargetBeans(mockTargetBeans);
 
     	Tomcat tomcat = new Tomcat();
+
     	tomcat.setPort(url.getPort());
     	tomcat.setHostname("localhost");
-    	
+		tomcat.getServer().setPort(url.getPort());
+		// tomcat.getHost().setAppBase(".");
+
     	// http://www.codejava.net/servers/tomcat/how-to-embed-tomcat-server-into-java-web-applications
     	// https://github.com/spring-projects/spring-boot/blob/master/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/web/embedded/tomcat/TomcatServletWebServerFactory.java
     	
@@ -149,9 +150,16 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
 		defaultServlet.setServlet(servlet);
 		
 		context.addChild(defaultServlet);
-		context.addServletMappingDecoded("/", defaultServlet.getName());        
+		context.addServletMappingDecoded("/", defaultServlet.getName());
 
-        servers.add(tomcat);
+		Connector connector = new Connector();
+		connector.setThrowOnFailure(true);
+		connector.setPort(url.getPort());
+
+		tomcat.getService().addConnector(connector);
+		tomcat.setConnector(connector);
+
+		servers.add(tomcat);
 		
         start(tomcat);
         
@@ -164,7 +172,8 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
 	}
 
 	private void start(Tomcat tomcat) throws InterruptedException, LifecycleException {
-        tomcat.start();
+        tomcat.init();
+		tomcat.start();
 
 		long deadline = System.currentTimeMillis() + 10000;
 		do {
@@ -180,6 +189,7 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
         	}
         	break;
 		} while(deadline > System.currentTimeMillis());
+
 	}
 	
 

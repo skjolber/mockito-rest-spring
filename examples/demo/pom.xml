@@ -5,7 +5,7 @@
 
 	<groupId>com.example</groupId>
 	<artifactId>demo</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>demo</name>
@@ -14,23 +14,24 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.3.RELEASE</version>
+		<version>3.2.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-		
-		<joda.version>2.9.7</joda.version>
-		<swagger-annotations.versions>1.5.12</swagger-annotations.versions>
-		
+		<java.version>17</java.version>
+
+		<swagger-annotations.version>1.6.12</swagger-annotations.version>
+		<openapi-generator.version>6.5.0</openapi-generator.version>
+		<servlet-api.version>6.0.0</servlet-api.version>
+
 		<!-- test -->
-		<truth.version>0.41</truth.version>
-		<junit.jupiter.version>5.2.0</junit.jupiter.version>
-		<junit.platform.version>1.2.0</junit.platform.version>
-		<mockito-rest-spring.version>1.0.3-SNAPSHOT</mockito-rest-spring.version>
+		<truth.version>1.2.0</truth.version>
+		<junit.jupiter.version>5.10.0</junit.jupiter.version>
+		<junit.platform.version>1.10.0</junit.platform.version>
+		<mockito-rest-spring.version>1.1.0-SNAPSHOT</mockito-rest-spring.version>
 	</properties>
 
 	<dependencies>
@@ -47,25 +48,28 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>javax.servlet-api</artifactId>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-		</dependency>		
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.6</version>
+		</dependency>
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-annotations</artifactId>
-			<version>${swagger-annotations.versions}</version>
-		</dependency>	
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
+			<version>${swagger-annotations.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.google.truth</groupId>
@@ -78,15 +82,14 @@
 		    <version>${truth.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-runner</artifactId>
-			<version>${junit.platform.version}</version>
-			<scope>test</scope>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.jupiter.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.github.skjolber.mockito-rest-spring</groupId>
 		    <artifactId>junit5-tomcat</artifactId>
-		    <version>${mockito-rest-spring.version}</version>
+		    <version>${project.version}</version>
 		    <scope>test</scope>
 		</dependency>
 		<dependency>
@@ -104,9 +107,9 @@
 			</plugin>
 
 			<plugin>
-				<groupId>io.swagger</groupId>
-				<artifactId>swagger-codegen-maven-plugin</artifactId>
-				<version>2.3.1</version>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>${openapi-generator.version}</version>
 				<executions>
 					<execution>
 						<id>generate-sources</id>
@@ -119,16 +122,33 @@
 							<inputSpec>${basedir}/src/main/resources/api/swagger.yaml</inputSpec>
 
 							<!-- target to generate -->
-							<language>spring</language>
+							<generatorName>spring</generatorName>
 
 							<output>${project.build.directory}/generated-sources</output>
-							<!-- pass any necessary config options -->
+
+							<!-- https://openapi-generator.tech/docs/generators/spring/ -->
+							<library>spring-boot</library>
+
+							<generatorName>spring</generatorName>
 							<configOptions>
-								<dateLibrary>joda</dateLibrary>
+								<sourceFolder>src/gen/java/main</sourceFolder>
+								<useSpringBoot3>true</useSpringBoot3>
+								<documentationProvider>none</documentationProvider>
+								<useTags>true</useTags>
 								<interfaceOnly>true</interfaceOnly>
-								<singleContentTypes>true</singleContentTypes>
-								<hideGenerationTimestamp>true</hideGenerationTimestamp>
 							</configOptions>
+							<!-- https://openapi-generator.tech/docs/generators/spring/ -->
+							<library>spring-boot</library>
+
+							<skipValidateSpec>true</skipValidateSpec>
+
+							<generateApiDocumentation>false</generateApiDocumentation>
+							<skipOperationExample>true</skipOperationExample>
+
+							<generateApis>true</generateApis>
+							<generateModels>true</generateModels>
+							<generateSupportingFiles>true</generateSupportingFiles>
+
 						</configuration>
 					</execution>
 				</executions>
@@ -149,71 +169,25 @@
 							</sources>
 						</configuration>
 					</execution>
+					<execution>
+						<id>add-test-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/src/test/java</source>
+							</sources>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>				
 				<artifactId>maven-surefire-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.junit.platform</groupId>
-						<artifactId>junit-platform-surefire-provider</artifactId>
-						<version>${junit.platform.version}</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>io.swagger</groupId>
-										<artifactId>
-											swagger-codegen-maven-plugin
-										</artifactId>
-										<versionRange>
-											[2.3.1,)
-										</versionRange>
-										<goals>
-											<goal>generate</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.codehaus.mojo
-										</groupId>
-										<artifactId>
-											build-helper-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.9.1,)
-										</versionRange>
-										<goals>
-											<goal>add-source</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>	
+
 	</build>
 </project>
