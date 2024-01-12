@@ -105,7 +105,7 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		return configuration.getAll();
 	}
 
-	private Undertow configureUndertow(MockitoSpringWebApplicationContext context, URL url) throws ServletException {
+	private Undertow configureUndertow(MockitoSpringWebApplicationContext context, URL url) throws Exception {
 		// https://github.com/yarosla/spring-undertow/blob/master/src/main/java/ys/undertow/UndertowMain.java
 		DeploymentInfo servletBuilder = Servlets.deployment()
 				.setClassLoader(Undertow.class.getClassLoader())

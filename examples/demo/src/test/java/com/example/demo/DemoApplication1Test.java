@@ -20,33 +20,34 @@ import org.springframework.http.ResponseEntity;
 
 import com.github.skjolber.mockito.rest.spring.api.MockEndpoint;
 
+
 @ExtendWith(MockitoEndpointExtension.class)
 @SpringBootTest
 public class DemoApplication1Test {
 
 	@Autowired
 	private DemoService demoService;
-	
+
 	@MockEndpoint
 	private PetApi petApi; // this class is generated from an OpenAPI file
-	
+
 	@Test
 	public void createPetSuccessful() throws Exception {
 		// setup mocking
 		Pet outputPet = new Pet();
 		outputPet.setId(3L);
 		outputPet.setName("response1");
-		
+
 		ResponseEntity<Pet> entity = ResponseEntity
-			.ok()
-			.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
-			.body(outputPet);
-		
-		when((petApi).addPet(ArgumentMatchers.any(Pet.class))).thenReturn(entity);		
-		
+				.ok()
+				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
+				.body(outputPet);
+
+		when((petApi).addPet(ArgumentMatchers.any(Pet.class))).thenReturn(entity);
+
 		// make the call
 		Pet pet = demoService.addPet("request");
-		
+
 		// verify result
 		assertThat(pet.getName()).isEqualTo(outputPet.getName());
 		assertThat(pet.getId()).isEqualTo(3L);
@@ -54,28 +55,28 @@ public class DemoApplication1Test {
 		// verify mock called
 		ArgumentCaptor<Pet> argument1 = ArgumentCaptor.forClass(Pet.class);
 		verify(petApi, times(1)).addPet(argument1.capture());
-		
-		assertThat(argument1.getValue().getName()).isEqualTo("request");		
+
+		assertThat(argument1.getValue().getName()).isEqualTo("request");
 	}
 
 	@Test
 	public void createPetFailure() throws Exception {
 		// setup mocking
 		ResponseEntity<Pet> entity = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		
-		when((petApi).addPet(ArgumentMatchers.any(Pet.class))).thenReturn(entity);		
-		
+
+		when((petApi).addPet(ArgumentMatchers.any(Pet.class))).thenReturn(entity);
+
 		// make the call
 		Pet pet = demoService.addPet("request");
-		
+
 		// verify result
 		assertThat(pet).isNull();
 
 		// verify mock called
 		ArgumentCaptor<Pet> argument1 = ArgumentCaptor.forClass(Pet.class);
 		verify(petApi, times(1)).addPet(argument1.capture());
-		
-		assertThat(argument1.getValue().getName()).isEqualTo("request");		
+
+		assertThat(argument1.getValue().getName()).isEqualTo("request");
 	}
 
 }

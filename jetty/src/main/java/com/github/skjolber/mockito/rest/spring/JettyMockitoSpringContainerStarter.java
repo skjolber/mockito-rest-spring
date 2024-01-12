@@ -2,7 +2,6 @@ package com.github.skjolber.mockito.rest.spring;
 
 import java.util.List;
 
-import jakarta.servlet.ServletRegistration;
 import org.eclipse.jetty.server.handler.ContextHandler.Context;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
@@ -13,6 +12,8 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+
+import javax.servlet.ServletRegistration;
 
 public class JettyMockitoSpringContainerStarter extends AbstractLifeCycle implements ServletContextHandler.ServletContainerInitializerCaller {
 
