@@ -29,7 +29,7 @@ Example JUnit 5 dependency config:
 <dependency>
     <groupId>com.github.skjolber.mockito-rest-spring</groupId>
     <artifactId>junit5-${flavour}</artifactId>
-    <version>1.0.3</version>
+    <version>2.0.x</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -40,7 +40,7 @@ or for JUnit 4
 <dependency>
     <groupId>com.github.skjolber-mockito-rest-spring</groupId>
     <artifactId>junit4-${flavour}</artifactId>
-    <version>1.0.3</version>
+    <version>2.0.x</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -128,7 +128,7 @@ Also, these alternatives do not require the bean/interface being available.
 
 # History
 
- - [1.1.0]: Update to latest generation
+ - [2.0.0]: Update to latest Spring, drop JUnit 4 support.
  - [1.0.3]: JUnit 5 support for Tomcat, Jetty and Undertow.
  - 1.0.2: Improved JAXB helper, fix artifact id. 
  - 1.0.1: Support for API interfaces, including [Swagger]-generated stubs. See [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRuleInterfaceTest.java).
