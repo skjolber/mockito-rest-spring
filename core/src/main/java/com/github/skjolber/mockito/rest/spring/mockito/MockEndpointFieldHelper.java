@@ -4,8 +4,6 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.mockito.internal.util.reflection.FieldSetter;
-
 import com.github.skjolber.mockito.rest.spring.api.MockEndpoint;
 
 public class MockEndpointFieldHelper {
@@ -37,7 +35,12 @@ public class MockEndpointFieldHelper {
 	}
 
 	public void setField(Field field, Object value) {
-		FieldSetter.setField(instance, field, value);
+		try {
+			field.setAccessible(true);
+			field.set(instance, value);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to set " + field.getName() + " of object " + value.getClass().getName(), e);
+		}
 	}
 
 }

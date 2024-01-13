@@ -8,7 +8,6 @@ Users will benefit from
   * full-stack __integration-style unit testing__ - over-the-wire mocking on local ports. 
   * [Mockito] support - i.e. full method/type safety
   * simple setup using JUnit 
-    * `@Rule` for [Junit 4](junit4)
     * `@Extension` for [JUnit 5](junit5)
   * Tomcat, Jetty & Undertow support
 
@@ -30,7 +29,7 @@ Example JUnit 5 dependency config:
 <dependency>
     <groupId>com.github.skjolber.mockito-rest-spring</groupId>
     <artifactId>junit5-${flavour}</artifactId>
-    <version>1.0.3</version>
+    <version>2.0.x</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -41,7 +40,7 @@ or for JUnit 4
 <dependency>
     <groupId>com.github.skjolber-mockito-rest-spring</groupId>
     <artifactId>junit4-${flavour}</artifactId>
-    <version>1.0.3</version>
+    <version>2.0.x</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -49,8 +48,6 @@ or for JUnit 4
 where `${flavour}` is `tomcat`, `jetty` or `undertow`.
 
 # Usage
-The below is for JUnit 5. For JUnit 4 go [here](junit4).
-
 If you prefer skipping to a full example, see [this unit test](examples/demo/src/test/java/com/example/demo/DemoApplication1Test.java). 
 
 # Basics
@@ -131,6 +128,7 @@ Also, these alternatives do not require the bean/interface being available.
 
 # History
 
+ - [2.0.0]: Update to latest Spring, drop JUnit 4 support.
  - [1.0.3]: JUnit 5 support for Tomcat, Jetty and Undertow.
  - 1.0.2: Improved JAXB helper, fix artifact id. 
  - 1.0.1: Support for API interfaces, including [Swagger]-generated stubs. See [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRuleInterfaceTest.java).

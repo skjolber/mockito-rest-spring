@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.openapitools.api.PetApi;
+import org.openapitools.model.Pet;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,6 @@ import org.springframework.web.client.RestTemplate;
 import com.github.skjolber.mockito.rest.spring.MockitoEndpointExtension;
 import com.github.skjolber.mockito.rest.spring.MyRestController;
 import com.github.skjolber.mockito.rest.spring.api.MockEndpoint;
-
-import io.swagger.api.PetApi;
-import io.swagger.model.Pet;
 
 
 /**

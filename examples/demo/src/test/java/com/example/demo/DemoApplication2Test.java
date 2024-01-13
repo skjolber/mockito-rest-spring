@@ -5,21 +5,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.github.skjolber.mockito.rest.spring.MockitoEndpointExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.openapitools.api.PetApi;
+import org.openapitools.model.Pet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import com.github.skjolber.mockito.rest.spring.MockitoSpringEndpointExtension;
 import com.github.skjolber.mockito.rest.spring.api.MockEndpoint;
 
-import io.swagger.api.PetApi;
-import io.swagger.model.Pet;
 
 /**
  * 
@@ -27,7 +27,7 @@ import io.swagger.model.Pet;
  * 
  */
 
-@ExtendWith(MockitoSpringEndpointExtension.class)
+@ExtendWith(MockitoEndpointExtension.class)
 @SpringBootTest
 public class DemoApplication2Test {
 

@@ -2,8 +2,7 @@ package com.github.skjolber.mockito.rest.spring;
 
 import java.util.List;
 
-import javax.servlet.ServletRegistration;
-
+import jakarta.servlet.ServletRegistration;
 import org.eclipse.jetty.server.handler.ContextHandler.Context;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;

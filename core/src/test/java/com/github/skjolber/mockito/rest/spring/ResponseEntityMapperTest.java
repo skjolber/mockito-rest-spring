@@ -1,18 +1,16 @@
 package com.github.skjolber.mockito.rest.spring;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ResponseEntityMapperTest {
 
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
 
 	private ResponseEntityMapper mapper = new ResponseEntityMapper();
 
@@ -28,14 +26,22 @@ public class ResponseEntityMapperTest {
 
 	@Test
 	public void testMapperException1() throws IOException {
-		exception.expect(IllegalArgumentException.class);
-		mapper.response("/examples/myResponse.json", MyResponse.class, "myHeader", Boolean.TRUE);		
+		try {
+			mapper.response("/examples/myResponse.json", MyResponse.class, "myHeader", Boolean.TRUE);
+			fail();
+		} catch(IllegalArgumentException e) {
+			// pass
+		}
 	}
 
 	@Test
 	public void testMapperException2() throws IOException {
-		exception.expect(FileNotFoundException.class);
-		mapper.response(new File("./src/test/resources/examples/doesnotexist.json"), MyResponse.class, "myHeader");		
+		try {
+			mapper.response(new File("./src/test/resources/examples/doesnotexist.json"), MyResponse.class, "myHeader");
+			fail();
+		} catch(FileNotFoundException e) {
+			// pass
+		}
 	}
 
 	@Test

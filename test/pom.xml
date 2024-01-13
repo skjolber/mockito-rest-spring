@@ -4,7 +4,8 @@
 	<parent>
 		<groupId>com.github.skjolber.mockito-rest-spring</groupId>
 		<artifactId>mockito-rest-spring-parent</artifactId>
-		<version>1.0.4-SNAPSHOT</version>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<packaging>jar</packaging>
@@ -29,24 +30,32 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-annotations</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
+			<groupId>jakarta.annotation</groupId>
+			<artifactId>jakarta.annotation-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.google.truth</groupId>
@@ -65,8 +74,8 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>io.swagger</groupId>
-				<artifactId>swagger-codegen-maven-plugin</artifactId>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>generate-sources</id>
@@ -79,16 +88,34 @@
 							<inputSpec>${basedir}/src/main/resources/api/swagger.yaml</inputSpec>
 
 							<!-- target to generate -->
-							<language>spring</language>
+							<generatorName>spring</generatorName>
 
 							<output>${project.build.directory}/generated-sources</output>
-							<!-- pass any necessary config options -->
+
+							<!-- https://openapi-generator.tech/docs/generators/spring/ -->
+							<library>spring-boot</library>
+
+							<generatorName>spring</generatorName>
 							<configOptions>
-								<dateLibrary>joda</dateLibrary>
+								<sourceFolder>src/gen/java/main</sourceFolder>
+								<useSpringBoot3>true</useSpringBoot3>
+								<documentationProvider>none</documentationProvider>
+								<useTags>true</useTags>
+								<useJakartaEe>true</useJakartaEe>
 								<interfaceOnly>true</interfaceOnly>
-								<singleContentTypes>true</singleContentTypes>
-								<hideGenerationTimestamp>true</hideGenerationTimestamp>
 							</configOptions>
+							<!-- https://openapi-generator.tech/docs/generators/spring/ -->
+							<library>spring-boot</library>
+
+							<skipValidateSpec>true</skipValidateSpec>
+
+							<generateApiDocumentation>false</generateApiDocumentation>
+							<skipOperationExample>true</skipOperationExample>
+
+							<generateApis>true</generateApis>
+							<generateModels>true</generateModels>
+							<generateSupportingFiles>true</generateSupportingFiles>
+
 						</configuration>
 					</execution>
 				</executions>
