@@ -117,8 +117,8 @@ Also, these alternatives do not require the bean/interface being available.
 
 # History
 
- - [2.0.0]: Update to latest Spring, drop JUnit 4 support.
- - [1.0.3]: JUnit 5 support for Tomcat, Jetty and Undertow.
+ - 2.0.0: Update to latest Spring, drop JUnit 4 support.
+ - 1.0.3: JUnit 5 support for Tomcat, Jetty and Undertow.
  - 1.0.2: Improved JAXB helper, fix artifact id. 
  - 1.0.1: Support for API interfaces, including [Swagger]-generated stubs. See [this unit test](src/test/java/com/github/skjolber/mockito/rest/spring/RestServiceRuleInterfaceTest.java).
  - 1.0.0: Initial version
