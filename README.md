@@ -34,17 +34,6 @@ Example JUnit 5 dependency config:
 </dependency>
 ```
 
-or for JUnit 4
-
-```xml
-<dependency>
-    <groupId>com.github.skjolber-mockito-rest-spring</groupId>
-    <artifactId>junit4-${flavour}</artifactId>
-    <version>2.0.x</version>
-    <scope>test</scope>
-</dependency>
-```
-
 where `${flavour}` is `tomcat`, `jetty` or `undertow`.
 
 # Usage
