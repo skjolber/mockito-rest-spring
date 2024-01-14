@@ -128,7 +128,7 @@ Also, these alternatives do not require the bean/interface being available.
 [Maven]:                http://maven.apache.org/
 [1.0.3]:				https://github.com/skjolber/mockito-rest-spring/releases/tag/mockito-spring-rest-1.0.3
 [WireMock]:             http://wiremock.org/
-[Spring Mock MVC]:      http://docs.spring.io/spring-security/site/docs/current/reference/html/test-mockmvc.html
+[Spring Mock MVC]:      https://docs.spring.io/spring-framework/reference/testing/spring-mvc-test-framework.html
 [Swagger]:				https://github.com/swagger-api/swagger-codegen
 [Mockito]:				https://github.com/mockito/mockito
 [RequestMapping]:		https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/RequestMapping.html
