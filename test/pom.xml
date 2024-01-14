@@ -100,12 +100,9 @@
 								<sourceFolder>src/gen/java/main</sourceFolder>
 								<useSpringBoot3>true</useSpringBoot3>
 								<documentationProvider>none</documentationProvider>
-								<useTags>true</useTags>
 								<useJakartaEe>true</useJakartaEe>
 								<interfaceOnly>true</interfaceOnly>
 							</configOptions>
-							<!-- https://openapi-generator.tech/docs/generators/spring/ -->
-							<library>spring-boot</library>
 
 							<skipValidateSpec>true</skipValidateSpec>
 

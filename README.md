@@ -98,10 +98,16 @@ or from JSON
 MyResponse response = jsonUtil.readResource("/example/MyResponse1.xml", MyResponse.class);
 ```
 
-using your favorite JSON utility. Then mock
+using your favorite JSON utility. The mocking will depend on the generated interface, i.e. 
 
 ```java
 when(myRestService.method3(any(MyRequest.class)).thenReturn(expected);
+```
+
+or with the `useResponseEntity` parameter:
+
+```java
+when(myRestService.method3(any(MyRequest.class)).thenReturn(new ResponseEntity<>(expected, HttpStatus.OK));
 ```
 
 and apply standard Mockito test approach. After triggering calls to the mock service, verify number of method calls
@@ -117,6 +123,8 @@ and request details
 MyRequest request = argument1.getValue();
 assertThat(request.getCode(), is(1));
 ```
+
+The details of the mocking will depend on the 
 
 # Alternatives
 While this project offers easy-to-setup testing, you might suppliment your testing using the following projects: 
