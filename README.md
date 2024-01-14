@@ -93,7 +93,16 @@ using your favorite JSON utility. Then mock
 when(myRestService.method3(any(MyRequest.class)).thenReturn(expected);
 ```
 
-and apply standard Mockito test approach. After triggering calls to the mock service, verify number of method calls
+or with a `ResponseEntity` wrapper (via OpenAPI `useResponseEntity` parameter):
+
+```java
+when(myRestService.method3(any(MyRequest.class)).thenReturn(new ResponseEntity<>(expected, HttpStatus.OK));
+```
+
+and apply standard Mockito test approach. 
+
+## Verifing calls
+After triggering calls to the mock service, verify number of method calls
 
 ```java
 ArgumentCaptor<MyRequest> argument1 = ArgumentCaptor.forClass(MyRequest.class);
