@@ -11,9 +11,12 @@ Users will benefit from
     * `@Extension` for [JUnit 5](junit5)
   * Tomcat, Jetty & Undertow support
 
-The REST API must be available either in the form of an annotated interface or a concrete implemenation at compile time. This usually means running a code generator plugin to generate the stubs from your Swagger/OpenAPI definitions.
+The REST API must be available either in the form of an annotated interface or a concrete implemenation at compile time. 
 
-While the primary target is __Spring-flavored REST__, there is really no constraints on using other implementations. 
+When working with OpenAPI definitions this usually means running the code generator two times:
+
+ * once for your regular client (main scope), and
+ * once for the to-be-mocked server (test scope).
 
 Bugs, feature suggestions and help requests can be filed with the [issue-tracker].
 
