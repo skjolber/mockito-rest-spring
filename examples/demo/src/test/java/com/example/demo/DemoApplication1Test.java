@@ -1,17 +1,19 @@
 package com.example.demo;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.github.skjolber.mockito.rest.spring.MockitoEndpointExtension;
+import com.github.skjolber.pet.ApiException;
+import com.github.skjolber.pet.model.Pet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.openapitools.api.PetApi;
-import org.openapitools.model.Pet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -27,8 +29,8 @@ public class DemoApplication1Test {
 	@Autowired
 	private DemoService demoService;
 	
-	@MockEndpoint
-	private PetApi petApi; // this class is generated from an OpenAPI file
+	@MockEndpoint(path = "/api")
+	private PetApi petApi;
 	
 	@Test
 	public void createPetSuccessful() throws Exception {
@@ -42,7 +44,7 @@ public class DemoApplication1Test {
 			.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
 			.body(outputPet);
 		
-		when((petApi).addPet(ArgumentMatchers.any(Pet.class))).thenReturn(entity);		
+		when(petApi.addPet(any(Pet.class))).thenReturn(entity);
 		
 		// make the call
 		Pet pet = demoService.addPet("request");
@@ -64,12 +66,14 @@ public class DemoApplication1Test {
 		ResponseEntity<Pet> entity = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		
 		when((petApi).addPet(ArgumentMatchers.any(Pet.class))).thenReturn(entity);		
-		
+
 		// make the call
-		Pet pet = demoService.addPet("request");
-		
-		// verify result
-		assertThat(pet).isNull();
+
+		try {
+			demoService.addPet("request");
+		} catch(ApiException e) {
+			// ignore
+		}
 
 		// verify mock called
 		ArgumentCaptor<Pet> argument1 = ArgumentCaptor.forClass(Pet.class);

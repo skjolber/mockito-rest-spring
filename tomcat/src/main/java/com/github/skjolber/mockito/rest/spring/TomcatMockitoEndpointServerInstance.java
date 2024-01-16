@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +100,23 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
 
     	Tomcat tomcat = new Tomcat();
 
+		File rootFile = Files.createTempDirectory("tomcat").toFile();
+
+		if(!rootFile.exists() && !rootFile.mkdirs()) {
+			throw new RuntimeException("Unable to create directory " + rootFile);
+		}
+
+		File baseDir = new File(rootFile, "base");
+		if(!baseDir.exists() && !baseDir.mkdir()) {
+			throw new RuntimeException("Unable to create directory " + baseDir);
+		}
+
+		File docBase = new File(rootFile, "doc");
+		if(!docBase.exists() && !docBase.mkdir()) {
+			throw new RuntimeException("Unable to create directory " + docBase);
+		}
+		tomcat.setBaseDir(baseDir.getAbsolutePath());
+
     	tomcat.setPort(url.getPort());
     	tomcat.setHostname("localhost");
 		tomcat.getServer().setPort(url.getPort());
@@ -118,25 +136,7 @@ public class TomcatMockitoEndpointServerInstance implements MockitoEndpointServe
 		dispatcherContext.addApplicationListener(configuration);
 		
     	String contextPath = url.getPath();
-    	
-    	String tempDir = System.getProperty("java.io.tmpdir");
 
-    	File rootFile = new File(tempDir, "tomcat");
-    	if(!rootFile.exists() && !rootFile.mkdirs()) {
-    		throw new RuntimeException("Unable to create directory " + rootFile);
-    	}
-    	
-    	File baseDir = new File(rootFile, "base");
-    	if(!baseDir.exists() && !baseDir.mkdir()) {
-    		throw new RuntimeException("Unable to create directory " + baseDir);
-    	}
-    	
-    	File docBase = new File(rootFile, "doc");
-    	if(!docBase.exists() && !docBase.mkdir()) {
-    		throw new RuntimeException("Unable to create directory " + docBase);
-    	}
-    	
-    	tomcat.setBaseDir(baseDir.getAbsolutePath());
     	Context context = tomcat.addContext(contextPath, docBase.getAbsolutePath());
     	
     	context.addLifecycleListener(new FixContextListener());

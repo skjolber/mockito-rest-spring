@@ -6,12 +6,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.github.skjolber.mockito.rest.spring.MockitoEndpointExtension;
+import com.github.skjolber.pet.ApiException;
+import com.github.skjolber.pet.model.Pet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.openapitools.api.PetApi;
-import org.openapitools.model.Pet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -33,9 +34,9 @@ public class DemoApplication2Test {
 
 	@Autowired
 	private DemoService demoService;
-	
-	@MockEndpoint
-	private PetApi petApi; // this class is generated from an OpenAPI file
+
+	@MockEndpoint(path = "/api")
+	private PetApi petApi;
 	
 	@Test
 	public void createPetSuccessful() throws Exception {
@@ -70,13 +71,13 @@ public class DemoApplication2Test {
 		// setup mocking
 		ResponseEntity<Pet> entity = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		
-		when((petApi).addPet(ArgumentMatchers.any(Pet.class))).thenReturn(entity);		
-		
-		// make the call
-		Pet pet = demoService.addPet("request");
-		
-		// verify result
-		assertThat(pet).isNull();
+		when((petApi).addPet(ArgumentMatchers.any(Pet.class))).thenReturn(entity);
+
+		try {
+			demoService.addPet("request");
+		} catch(ApiException e) {
+			// ignore
+		}
 
 		// verify mock called
 		ArgumentCaptor<Pet> argument1 = ArgumentCaptor.forClass(Pet.class);

@@ -1,17 +1,11 @@
 package com.example.demo;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.openapitools.model.Pet;
+import com.github.skjolber.pet.ApiException;
+import com.github.skjolber.pet.model.Category;
+import com.github.skjolber.pet.model.Pet;
+import org.openapitools.client.api.PetApi;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * 
@@ -21,33 +15,20 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class DemoService {
-	
-	@Value("${my.url}")
-	private String myUrl;
-	
-	@Autowired
-	private RestTemplate restTemplate;
 
-	public Pet addPet(String name) throws Exception {
+	@Autowired
+	private PetApi petApi;
+
+	public Pet addPet(String name) throws ApiException {
 		Pet inputPet = new Pet();
 		inputPet.setName(name);
-
-		RequestEntity<Pet> request = RequestEntity
-			     .post(new URI(myUrl))
-			     .accept(MediaType.APPLICATION_JSON)
-			     .contentType(MediaType.APPLICATION_JSON)
-			     .body(inputPet);
-
-		try {
-			ResponseEntity<Pet> responseEntity = restTemplate.exchange(request, Pet.class);
-			if(responseEntity.getStatusCode().is2xxSuccessful()) {
-				return responseEntity.getBody();
-			}
-		} catch (RestClientException e) {
-			// not able to add
-		}
-		
-		return null;
+		inputPet.setId(3L);
+		inputPet.setStatus(Pet.StatusEnum.AVAILABLE);
+		Category c = new Category();
+		c.setId(1L);
+		c.setName("Test");
+		inputPet.setCategory(c);
+		return petApi.addPet(inputPet);
 	}
 	
 }

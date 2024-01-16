@@ -85,7 +85,7 @@
 						</goals>
 						<configuration>
 							<!-- specify the swagger yaml -->
-							<inputSpec>${basedir}/src/main/resources/api/swagger.yaml</inputSpec>
+							<inputSpec>${basedir}/src/main/resources/api/openapi.yaml</inputSpec>
 
 							<!-- target to generate -->
 							<generatorName>spring</generatorName>

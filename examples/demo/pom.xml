@@ -53,8 +53,17 @@
 			<version>${servlet-api.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
+			<version>5.2.1</version>
+		</dependency>
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.validation</groupId>
@@ -118,20 +127,34 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<!-- specify the swagger yaml -->
-							<inputSpec>${basedir}/src/main/resources/api/swagger.yaml</inputSpec>
+							<generatorName>java</generatorName>
+							<inputSpec>${basedir}/src/main/resources/api/openapi.yaml</inputSpec>
+							<configOptions>
+								<sourceFolder>src/main/gen/java</sourceFolder>
+								<useJakartaEe>true</useJakartaEe>
+							</configOptions>
+							<!-- https://openapi-generator.tech/docs/generators/java/ -->
+							<library>apache-httpclient</library>
 
-							<!-- target to generate -->
-							<generatorName>spring</generatorName>
+							<generateApis>true</generateApis>
+							<generateModels>true</generateModels>
+							<generateSupportingFiles>true</generateSupportingFiles>
 
-							<output>${project.build.directory}/generated-sources</output>
-
-							<!-- https://openapi-generator.tech/docs/generators/spring/ -->
-							<library>spring-boot</library>
-
+							<modelPackage>com.github.skjolber.pet.model</modelPackage>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-test-sources</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${basedir}/src/main/resources/api/openapi.yaml</inputSpec>
 							<generatorName>spring</generatorName>
 							<configOptions>
-								<sourceFolder>src/gen/java/main</sourceFolder>
+								<sourceFolder>src/main/gen/java</sourceFolder>
+								<useJakartaEe>false</useJakartaEe>
 								<useSpringBoot3>true</useSpringBoot3>
 								<documentationProvider>none</documentationProvider>
 								<useTags>true</useTags>
@@ -139,16 +162,14 @@
 							</configOptions>
 							<!-- https://openapi-generator.tech/docs/generators/spring/ -->
 							<library>spring-boot</library>
-
-							<skipValidateSpec>true</skipValidateSpec>
-
 							<generateApiDocumentation>false</generateApiDocumentation>
 							<skipOperationExample>true</skipOperationExample>
 
 							<generateApis>true</generateApis>
-							<generateModels>true</generateModels>
-							<generateSupportingFiles>true</generateSupportingFiles>
+							<generateModels>false</generateModels>
+							<generateSupportingFiles>false</generateSupportingFiles>
 
+							<modelPackage>com.github.skjolber.pet.model</modelPackage>
 						</configuration>
 					</execution>
 				</executions>
@@ -165,7 +186,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/src/main/java</source>
+								<source>${project.build.directory}/generated-sources/openapi/src/main/gen/java</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -177,12 +198,12 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/src/test/java</source>
+								<source>${project.build.directory}/generated-test-sources/openapi/src/main/gen/java</source>
 							</sources>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>		
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>				
 				<artifactId>maven-surefire-plugin</artifactId>
