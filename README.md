@@ -129,6 +129,7 @@ Also, these alternatives do not require the bean/interface being available.
 
 # History
 
+ - 2.0.1: Fix Tomcat temporary folder 
  - 2.0.0: Update to latest Spring, drop JUnit 4 support.
  - 1.0.3: JUnit 5 support for Tomcat, Jetty and Undertow.
  - 1.0.2: Improved JAXB helper, fix artifact id. 
@@ -138,7 +139,6 @@ Also, these alternatives do not require the bean/interface being available.
 [Apache 2.0]:          	http://www.apache.org/licenses/LICENSE-2.0.html
 [issue-tracker]:       	https://github.com/skjolber/mockito-rest-spring/issues
 [Maven]:                http://maven.apache.org/
-[1.0.3]:				https://github.com/skjolber/mockito-rest-spring/releases/tag/mockito-spring-rest-1.0.3
 [WireMock]:             http://wiremock.org/
 [Spring Mock MVC]:      https://docs.spring.io/spring-framework/reference/testing/spring-mvc-test-framework.html
 [Swagger]:				https://github.com/swagger-api/swagger-codegen
