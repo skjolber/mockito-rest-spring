@@ -43,13 +43,13 @@ where `${flavour}` is `tomcat`, `jetty` or `undertow`.
 If you prefer skipping to a full example, see [this unit test](examples/demo/src/test/java/com/example/demo/DemoApplication1Test.java). 
 
 # Basics
-In your JUnit test, add a `MockitoSpringEndpointExtension` extension:
+In your JUnit test, add a `MockitoEndpointExtension` extension:
 
 ```java
-@ExtendWith(MockitoSpringEndpointExtension.class)
+@ExtendWith(MockitoEndpointExtension.class)
 ```
 
-removing any `SpringExtension` (it is included in the above extension to guarantee the right execution order). Then mock service endpoints by using
+before (above) any `SpringExtension` or `@SpringBootTest`. Then mock service endpoints by using
 
 ```java
 @MockEndpoint(path = "/rest")
