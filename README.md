@@ -52,11 +52,11 @@ In your JUnit test, add a `MockitoEndpointExtension` extension:
 before (above) any `SpringExtension` or `@SpringBootTest`. Then mock service endpoints by using
 
 ```java
-@MockEndpoint(path = "/rest")
+@MockEndpoint
 private MyRestService myRestService;
 ```
 
-where the `MyRestService` is either an interface or a concrete `@RestController` implementation. For a custom (or missing) class level [RequestMapping] use
+where the `MyRestService` is either an interface or a concrete `@RestController` implementation. For a custom (or missing) class level [RequestMapping] add a `path` parameter:
 
 ```java
 @MockEndpoint(path = "/rest")
@@ -124,6 +124,7 @@ While this project offers easy-to-setup testing, you might suppliment your testi
 
    * [Spring Mock MVC] - using RestTemplate clients
    * [WireMock]
+   * [grpcmock]
 
 Also, these alternatives do not require the bean/interface being available.
 
@@ -141,6 +142,7 @@ Also, these alternatives do not require the bean/interface being available.
 [Maven]:                http://maven.apache.org/
 [WireMock]:             http://wiremock.org/
 [Spring Mock MVC]:      https://docs.spring.io/spring-framework/reference/testing/spring-mvc-test-framework.html
-[Swagger]:				https://github.com/swagger-api/swagger-codegen
-[Mockito]:				https://github.com/mockito/mockito
-[RequestMapping]:		https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/RequestMapping.html
+[Swagger]:				          https://github.com/swagger-api/swagger-codegen
+[Mockito]:				          https://github.com/mockito/mockito
+[RequestMapping]:		     https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/RequestMapping.html
+[grpcmock]:             https://github.com/Fadelis/grpcmock
