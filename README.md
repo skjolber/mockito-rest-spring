@@ -15,7 +15,7 @@ The REST API must be available either in the form of an annotated interface or a
 
 When working with OpenAPI definitions this usually means running the code generator two times:
 
- * once for your regular client (main scope), and
+ * once for your model + client (main scope), and
  * once for the to-be-mocked server (test scope).
 
 Bugs, feature suggestions and help requests can be filed with the [issue-tracker].
