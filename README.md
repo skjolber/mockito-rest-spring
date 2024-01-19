@@ -122,11 +122,9 @@ assertThat(request.getCode(), is(1));
 # Alternatives
 While this project offers easy-to-setup testing, you might suppliment your testing using the following projects: 
 
-   * [Spring Mock MVC] - using RestTemplate clients
+   * [Spring Mock MVC]
    * [WireMock]
    * [grpcmock]
-
-Also, these alternatives do not require the bean/interface being available.
 
 # History
 
