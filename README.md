@@ -23,21 +23,83 @@ Bugs, feature suggestions and help requests can be filed with the [issue-tracker
 ## License
 [Apache 2.0]
 
-# Obtain
-The project is based on [Maven] and is available on central Maven repository.
+## Obtain
+The project is built with [Maven] and is available on the central Maven repository. 
 
-Example JUnit 5 dependency config:
+<details>
+  <summary>Maven coordinates</summary>
+
+Add the property
+```xml
+<mockito-rest-spring.version>2.0.x</mockito-rest-spring.version>
+```
+
+then add for Tomcat
 
 ```xml
 <dependency>
     <groupId>com.github.skjolber.mockito-rest-spring</groupId>
-    <artifactId>junit5-${flavour}</artifactId>
-    <version>2.0.x</version>
+    <artifactId>junit5-tomcat</artifactId>
+    <version>${mockito-rest-spring.version}</version>
+    <scope>test</scope>
+</dependency>
+```
+or Undertow
+
+```xml
+<dependency>
+    <groupId>com.github.skjolber.mockito-rest-spring</groupId>
+    <artifactId>junit5-undertow</artifactId>
+    <version>${mockito-rest-spring.version}</version>
     <scope>test</scope>
 </dependency>
 ```
 
-where `${flavour}` is `tomcat`, `jetty` or `undertow`.
+or Jetty
+
+```xml
+<dependency>
+    <groupId>com.github.skjolber.mockito-rest-spring</groupId>
+    <artifactId>junit5-jetty</artifactId>
+    <version>${mockito-rest-spring.version}</version>
+    <scope>test</scope>
+</dependency>
+```
+
+</details>
+
+or
+
+<details>
+  <summary>Gradle coordinates</summary>
+
+For
+
+```groovy
+ext {
+  mockitoRestSpringVersion = '2.0.x'
+}
+```
+
+add for Tomcat
+
+```groovy
+api("com.github.skjolber.mockito-rest-spring:junit5-tomcat:${mockitoRestSpringVersion}")
+```
+
+or Undertow,
+
+```groovy
+api("com.github.skjolber.mockito-rest-spring:junit5-undertow:${mockitoRestSpringVersion}")
+```
+
+
+or Jetty
+
+```groovy
+api("com.github.skjolber.mockito-rest-spring:junit5-jetty:${mockitoRestSpringVersion}")
+```
+</details>
 
 # Usage
 If you prefer skipping to a full example, see [this unit test](examples/demo/src/test/java/com/example/demo/DemoApplication1Test.java). 
