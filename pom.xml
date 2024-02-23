@@ -59,7 +59,7 @@
 		<commons.io.version>2.6</commons.io.version>
 		<truth.version>0.41</truth.version>
 
-		<spring.version>6.1.2</spring.version>
+		<spring.version>6.1.4</spring.version>
 		<logback.version>1.4.14</logback.version>
 		<slf4j.version>2.0.9</slf4j.version>
 
