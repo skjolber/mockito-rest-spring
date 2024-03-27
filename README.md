@@ -190,6 +190,7 @@ While this project offers easy-to-setup testing, you might suppliment your testi
 
 # History
 
+ - 2.0.2: Dependency updates
  - 2.0.1: Fix Tomcat temporary folder 
  - 2.0.0: Update to latest Spring, drop JUnit 4 support.
  - 1.0.3: JUnit 5 support for Tomcat, Jetty and Undertow.
