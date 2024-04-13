@@ -1,3 +1,6 @@
+![Build Status](https://github.com/skjolber/mockito-rest-spring/actions/workflows/maven.yml/badge.svg) 
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.skjolber.mockito-rest-spring/core.svg)](https://mvnrepository.com/artifact/com.github.skjolber.mockito-rest-spring)
+
 # mockito-rest-spring
 This utility supports __unit testing applications which consume external REST services__ defined using Swagger/OpenAPI, RAML or equivalent. 
 
