@@ -2,7 +2,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.skjolber.mockito-rest-spring/core.svg)](https://mvnrepository.com/artifact/com.github.skjolber.mockito-rest-spring)
 
 # mockito-rest-spring
-This utility supports __unit testing applications which consume external REST services__ defined using Swagger/OpenAPI, RAML or equivalent. 
+This utility supports __high-level unit testing__ for applications which consume external REST services defined using Swagger/OpenAPI, RAML or equivalent. 
 
 In a nutshell, mocking external REST services becomes __as simple as mocking any other bean__ using [Mockito].
 
@@ -10,16 +10,15 @@ Users will benefit from
 
   * full-stack __integration-style unit testing__ - over-the-wire mocking on local ports. 
   * [Mockito] support - i.e. full method/type safety
-  * simple setup using JUnit 
-    * `@Extension` for [JUnit 5](junit5)
+  * simple setup using [JUnit 5](junit5) `@Extension`
   * Tomcat, Jetty & Undertow support
 
 The REST API must be available either in the form of an annotated interface or a concrete implemenation at compile time. 
 
 When working with OpenAPI definitions this usually means running the code generator two times:
 
- * once for your model + client (main scope), and
- * once for the to-be-mocked server (test scope).
+ * model + client (main scope), and
+ * to-be-mocked server (test scope).
 
 Bugs, feature suggestions and help requests can be filed with the [issue-tracker].
 
@@ -185,7 +184,7 @@ assertThat(request.getCode(), is(1));
 ```
 
 # Alternatives
-While this project offers easy-to-setup testing, you might suppliment your testing using the following projects: 
+You might supplement your testing using the following more low-level mocking projects: 
 
    * [Spring Mock MVC]
    * [WireMock]
@@ -193,6 +192,7 @@ While this project offers easy-to-setup testing, you might suppliment your testi
 
 # History
 
+ - 2.0.3: Dependency updates
  - 2.0.2: Dependency updates
  - 2.0.1: Fix Tomcat temporary folder 
  - 2.0.0: Update to latest Spring, drop JUnit 4 support.
