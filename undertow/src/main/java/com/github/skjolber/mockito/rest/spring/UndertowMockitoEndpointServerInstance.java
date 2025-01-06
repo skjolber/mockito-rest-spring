@@ -1,11 +1,16 @@
 package com.github.skjolber.mockito.rest.spring;
 
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import jakarta.servlet.ServletException;
+
+import org.springframework.core.metrics.ApplicationStartup;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -16,6 +21,7 @@ import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
+import io.undertow.servlet.api.DeploymentManager.State;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ListenerInfo;
 import io.undertow.servlet.api.ServletInfo;
@@ -27,8 +33,13 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 	private static final String CONTEXT_PATH = "/";
 
 	protected boolean started = true;
-	protected List<Undertow> servers = new ArrayList<>();
+	protected List<UndertowServers> servers = new ArrayList<>();
 
+	protected static class UndertowServers {
+		Undertow server;
+		SocketAddress endpoint;
+	}
+	
 	/**
 	 * 
 	 * Destroy endpoints.
@@ -39,8 +50,23 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		synchronized (this) {
 			started = false;
 
-			for (Undertow server : servers) {
-				server.stop();
+			for (UndertowServers server : servers) {
+				server.server.stop();
+			}
+
+			// wait untill ports free
+			for (UndertowServers server : servers) {
+				ServerSocket socket = new ServerSocket();
+				while(true) {
+					try {
+						socket.bind(server.endpoint);
+						socket.close();
+						break;
+					} catch(Exception e) {
+						Thread.sleep(10);
+						e.printStackTrace();
+					}
+				}
 			}
 
 			servers.clear();
@@ -58,9 +84,25 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 			if(started) {
 				started = false;
 	
-				for (Undertow server : servers) {
-					server.stop();
+				for (UndertowServers server : servers) {
+					server.server.stop();
 				}
+
+				// wait untill ports free
+				for (UndertowServers server : servers) {
+					ServerSocket socket = new ServerSocket();
+					while(true) {
+						try {
+							socket.bind(server.endpoint);
+							socket.close();
+							break;
+						} catch(Exception e) {
+							Thread.sleep(10);
+							e.printStackTrace();
+						}
+					}
+				}
+				
 			}
 		}
 	}
@@ -75,8 +117,8 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		synchronized (this) {
 			if(!started) {
 				started = true;
-				for (Undertow server : servers) {
-					server.start();
+				for (UndertowServers server : servers) {
+					server.server.start();
 				}
 			}
 		}
@@ -93,26 +135,18 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		for(Class<?> bean : defaultContextBeans) {
 			dispatcherContext.register(bean);
 		}
-
 		dispatcherContext.addApplicationListener(configuration);
 
-		Undertow undertow = configureUndertow(dispatcherContext, url);
+		SimpleSpringApplicationListener simpleSpringApplicationListener = new SimpleSpringApplicationListener();
+		dispatcherContext.addApplicationListener(simpleSpringApplicationListener);
 
-		servers.add(undertow);
-
-		undertow.start();
-
-		return configuration.getAll();
-	}
-
-	private Undertow configureUndertow(MockitoSpringWebApplicationContext context, URL url) throws ServletException {
 		// https://github.com/yarosla/spring-undertow/blob/master/src/main/java/ys/undertow/UndertowMain.java
 		DeploymentInfo servletBuilder = Servlets.deployment()
 				.setClassLoader(Undertow.class.getClassLoader())
 				.setContextPath(url.getPath())
 				.setDeploymentName("mock")
-				.addServlet(createDispatcherServlet(context))
-				.addListener(createContextLoaderListener(context));
+				.addServlet(createDispatcherServlet(dispatcherContext))
+				.addListener(createContextLoaderListener(dispatcherContext));
 
 		DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
 		manager.deploy();
@@ -120,11 +154,25 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		PathHandler path = Handlers.path(Handlers.redirect("/"))
 				.addPrefixPath(CONTEXT_PATH, manager.start());
 
-		return Undertow.builder()
+		Undertow undertow = Undertow.builder()
 				.addHttpListener(url.getPort(), url.getHost())
 				.setHandler(path)
-				.build();
+				.build();		
+
+		UndertowServers s = new UndertowServers();
+		s.server = undertow;
+		
+		servers.add(s);
+		
+		undertow.start();
+
+		s.endpoint = undertow.getListenerInfo().get(0).getAddress();
+
+		
+
+		return configuration.getAll();
 	}
+
 
 	private static ListenerInfo createContextLoaderListener(WebApplicationContext context) {
 		InstanceFactory<ContextLoaderListener> factory = new ImmediateInstanceFactory<>(new ContextLoaderListener(context));
