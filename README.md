@@ -2,7 +2,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.skjolber.mockito-rest-spring/core.svg)](https://mvnrepository.com/artifact/com.github.skjolber.mockito-rest-spring)
 
 # mockito-rest-spring
-This utility supports __high-level unit testing__ for applications which consume external REST services defined using Swagger/OpenAPI, RAML or equivalent. 
+This utility supports __high-level unit testing__ for applications which consume external HTTP services which can be defined using Spring-flavoured REST. 
 
 In a nutshell, mocking external REST services becomes __as simple as mocking any other bean__ using [Mockito].
 
@@ -13,7 +13,7 @@ Users will benefit from
   * simple setup using [JUnit 5](junit5) `@Extension`
   * Tomcat, Jetty & Undertow support
 
-The REST API must be available either in the form of an annotated interface or a concrete implemenation at compile time. 
+The target API must be available either in the form of an annotated interface or a concrete implementation at compile time. 
 
 When working with OpenAPI definitions this usually means running the code generator two times:
 
@@ -104,7 +104,10 @@ api("com.github.skjolber.mockito-rest-spring:junit5-jetty:${mockitoRestSpringVer
 </details>
 
 # Usage
-If you prefer skipping to a full example, see [this unit test](examples/demo/src/test/java/com/example/demo/DemoApplication1Test.java). 
+If you prefer skipping to a full example, see 
+
+ * [REST service unit test](examples/demo/src/test/java/com/example/demo/DemoApplication1Test.java)
+ * [GraphQL service unit test](examples/graphql-demo/src/test/java/com/example/demo/GraphQLTest.java) example, featuring [mockito-graphql-matchers](https://github.com/skjolber/mockito-graphql-matchers).
 
 # Basics
 In your JUnit test, add a `MockitoEndpointExtension` extension:
@@ -182,6 +185,32 @@ and request details
 MyRequest request = argument1.getValue();
 assertThat(request.getCode(), is(1));
 ```
+
+## Mocking GraphQL
+Manually add the API interface
+
+```
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.server.ResponseStatusException;
+
+public interface MyGraphQLApi {
+
+    @RequestMapping(
+        method = RequestMethod.POST,
+        value = "/graphql",
+        produces = { "application/json" },
+        consumes = { "application/json"}
+    )
+    default String request(@RequestBody String graphQL) throws ResponseStatusException {
+    	throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+    }
+}
+```
+
+and work with String request/response. Match requests using [mockito-graphql-matchers](https://github.com/skjolber/mockito-graphql-matchers) or equivalent.
 
 # Alternatives
 You might supplement your testing using the following more low-level mocking projects: 

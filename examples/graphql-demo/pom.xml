@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>graphql-demo</artifactId>
 	<version>2.0.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>demo</name>
+	<name>graphql-demo</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -32,12 +32,17 @@
 		<junit.jupiter.version>5.11.3</junit.jupiter.version>
 		<junit.platform.version>1.11.3</junit.platform.version>
 		<mockito-rest-spring.version>2.0.4-SNAPSHOT</mockito-rest-spring.version>
+		<mockito-graphql-matchers.version>1.0.0</mockito-graphql-matchers.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-webflux</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -59,6 +64,16 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>com.netflix.graphql.dgs</groupId>
+		    <artifactId>graphql-dgs-client</artifactId>
+		    <version>10.0.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.github.skjolber.mockito.graphql</groupId>
+		    <artifactId>matchers</artifactId>
+		    <version>${mockito-graphql-matchers.version}</version>
+		</dependency>		
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
 			<artifactId>jackson-jaxrs-json-provider</artifactId>
@@ -109,96 +124,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<groupId>org.openapitools</groupId>
-				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<version>${openapi-generator.version}</version>
-				<executions>
-					<execution>
-						<id>generate-sources</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<generatorName>java</generatorName>
-							<inputSpec>${basedir}/src/main/resources/api/openapi.yaml</inputSpec>
-							<configOptions>
-								<sourceFolder>src/main/gen/java</sourceFolder>
-								<useJakartaEe>true</useJakartaEe>
-							</configOptions>
-							<!-- https://openapi-generator.tech/docs/generators/java/ -->
-							<library>apache-httpclient</library>
-
-							<generateApis>true</generateApis>
-							<generateModels>true</generateModels>
-							<generateSupportingFiles>true</generateSupportingFiles>
-
-							<modelPackage>com.github.skjolber.pet.model</modelPackage>
-						</configuration>
-					</execution>
-					<execution>
-						<id>generate-test-sources</id>
-						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${basedir}/src/main/resources/api/openapi.yaml</inputSpec>
-							<generatorName>spring</generatorName>
-							<configOptions>
-								<sourceFolder>src/main/gen/java</sourceFolder>
-								<useJakartaEe>false</useJakartaEe>
-								<useSpringBoot3>true</useSpringBoot3>
-								<documentationProvider>none</documentationProvider>
-								<useTags>true</useTags>
-								<interfaceOnly>true</interfaceOnly>
-							</configOptions>
-							<!-- https://openapi-generator.tech/docs/generators/spring/ -->
-							<library>spring-boot</library>
-							<generateApiDocumentation>false</generateApiDocumentation>
-							<skipOperationExample>true</skipOperationExample>
-
-							<generateApis>true</generateApis>
-							<generateModels>false</generateModels>
-							<generateSupportingFiles>false</generateSupportingFiles>
-
-							<modelPackage>com.github.skjolber.pet.model</modelPackage>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>add-sources</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${project.build.directory}/generated-sources/openapi/src/main/gen/java</source>
-							</sources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>add-test-sources</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-test-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${project.build.directory}/generated-test-sources/openapi/src/main/gen/java</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>				
