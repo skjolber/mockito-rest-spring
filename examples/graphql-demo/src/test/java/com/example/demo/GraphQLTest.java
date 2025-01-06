@@ -37,7 +37,7 @@ public class GraphQLTest {
 	public void getSuccessful() throws Exception {
 		// setup mocking
 		
-		String response = IOUtils.resourceToString("/responses/response.json", StandardCharsets.UTF_8);
+		String response = IOUtils.resourceToString("/responses/graphql-response.json", StandardCharsets.UTF_8);
 		when(myGraphQLApi.request(queryName("getTask"))).thenReturn(response);
 		
 		// make the call
@@ -53,7 +53,7 @@ public class GraphQLTest {
 		// somewhat crude testing to return null, but this demonstrates the use of matchers
 		
 		// setup mocking
-		String response = IOUtils.resourceToString("/responses/response.json", StandardCharsets.UTF_8);
+		String response = IOUtils.resourceToString("/responses/graphql-response.json", StandardCharsets.UTF_8);
 		when(myGraphQLApi.request(queryName("getSomeOtherTask"))).thenReturn(response);
 		
 		// make the call
