@@ -20,7 +20,7 @@ public class MockEndpointFieldHelper {
 
 		Class<?> current = clazz;
 		do {
-			for (Field field : clazz.getDeclaredFields()) {
+			for (Field field : current.getDeclaredFields()) {
 				if (field.isAnnotationPresent(MockEndpoint.class)) {
 					annotatedFields.add(field);
 				}
