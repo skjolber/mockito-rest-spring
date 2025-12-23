@@ -201,17 +201,13 @@
 			<build>
 				<pluginManagement>
 					<plugins>
-						<plugin>
-							<groupId>org.sonatype.plugins</groupId>
-							<artifactId>nexus-staging-maven-plugin</artifactId>
-							<executions>
-								<!-- disable deployment -->
-								<execution>
-									<id>default-deploy</id>
-									<phase>none</phase>
-								</execution>
-							</executions>
-						</plugin>
+				        <plugin>
+				            <groupId>org.sonatype.central</groupId>
+				            <artifactId>central-publishing-maven-plugin</artifactId>
+				            <configuration>
+				                <skipPublishing>true</skipPublishing>
+				            </configuration>
+				        </plugin>
 					</plugins>
 				</pluginManagement>
 			</build>
