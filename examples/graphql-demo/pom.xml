@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.7</version>
+		<version>3.5.9</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -24,15 +24,19 @@
 		<java.version>17</java.version>
 
 		<swagger-annotations.version>1.6.12</swagger-annotations.version>
-		<openapi-generator.version>6.5.0</openapi-generator.version>
+		<openapi-generator.version>7.17.0</openapi-generator.version>
 
 		<!-- test -->
-		<truth.version>1.4.4</truth.version>
+		<truth.version>1.4.5</truth.version>
 		
-		<junit.jupiter.version>5.11.3</junit.jupiter.version>
-		<junit.platform.version>1.11.3</junit.platform.version>
-		<mockito-rest-spring.version>2.0.4-SNAPSHOT</mockito-rest-spring.version>
-		<mockito-graphql-matchers.version>1.0.0</mockito-graphql-matchers.version>
+		<junit.jupiter.version>5.12.2</junit.jupiter.version>
+		<junit.platform.version>1.12.2</junit.platform.version>
+		<mockito-rest-spring.version>${project.version}</mockito-rest-spring.version>
+		<mockito-graphql-matchers.version>1.1.0</mockito-graphql-matchers.version>
+		
+		<test.jvm.argline>-Dio.netty.tryReflectionSetAccessible=false --add-exports
+      java.base/jdk.internal.misc=ALL-UNNAMED --enable-native-access=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED
+      -XX:+EnableDynamicAgentLoading --add-opens=java.base/java.util=ALL-UNNAMED</test.jvm.argline>
 	</properties>
 
 	<dependencies>
@@ -67,7 +71,7 @@
 		<dependency>
 		    <groupId>com.netflix.graphql.dgs</groupId>
 		    <artifactId>graphql-dgs-client</artifactId>
-		    <version>10.0.1</version>
+		    <version>11.0.0</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.github.skjolber.mockito.graphql</groupId>
@@ -128,8 +132,26 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>				
 				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!-- Shared with failsafe plugin -->
+					<argLine>${test.jvm.argline}</argLine>
+				</configuration>				
+			</plugin>
+			<plugin>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<!-- Shared with surefire plugin -->
+							<argLine>${test.jvm.argline}</argLine>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
-
 	</build>
 </project>

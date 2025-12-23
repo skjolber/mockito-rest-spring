@@ -9,7 +9,7 @@
 	<packaging>pom</packaging>
 
 	<organization>
-		<name>Media Skjolberg</name>
+		<name>Thomas Skjolberg</name>
 		<url>http://skjolber.github.io</url>
 	</organization>
 	<licenses>
@@ -51,39 +51,39 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 
-		<junit.jupiter.version>5.11.3</junit.jupiter.version>
-		<junit.platform.version>1.11.3</junit.platform.version>
+		<junit.jupiter.version>5.12.2</junit.jupiter.version>
+		<junit.platform.version>1.12.2</junit.platform.version>
 
-		<mockito.version>5.14.2</mockito.version>
+		<mockito.version>5.21.0</mockito.version>
 		<hamcrest.version>1.3</hamcrest.version>
 		<commons.io.version>2.18.0</commons.io.version>
-		<truth.version>1.4.4</truth.version>
+		<truth.version>1.4.5</truth.version>
 
-		<spring.version>6.1.21</spring.version>
-		<logback.version>1.5.12</logback.version>
-		<slf4j.version>2.0.12</slf4j.version>
+		<spring.version>6.2.15</spring.version>
+		<logback.version>1.5.22</logback.version>
+		<slf4j.version>2.0.17</slf4j.version>
 
-		<jetty.version>11.0.20</jetty.version>
-		<tomcat.version>10.1.47</tomcat.version>
+		<jetty.version>11.0.26</jetty.version>
+		<tomcat.version>10.1.50</tomcat.version>
 		<undertow.version>2.3.20.Final</undertow.version>
-		<jackson.version>2.18.2</jackson.version>
-		<byte-buddy.version>1.15.10</byte-buddy.version>
-		<swagger-annotations.version>2.2.26</swagger-annotations.version>
+		<jackson.version>2.20.1</jackson.version>
+		<byte-buddy.version>1.18.3</byte-buddy.version>
+		<swagger-annotations.version>2.2.41</swagger-annotations.version>
 		<servlet-api.version>6.0.0</servlet-api.version>
 
 		<!-- plugins -->
 		<build-helper-maven-plugin.version>1.9.1</build-helper-maven-plugin.version>
-		<jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
-		<nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
-		<maven-surefire-plugin.version>3.2.3</maven-surefire-plugin.version>
-		<maven-source-plugin.version>3.3.0</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
-		<maven-release-plugin.version>3.0.1</maven-release-plugin.version>
-		<maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
-		<maven-dependency-plugin.version>3.6.1</maven-dependency-plugin.version>
-		<maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-		<owasp-dependency-check.version>9.0.7</owasp-dependency-check.version>
-		<openapi-generator.version>6.5.0</openapi-generator.version>
+		<jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+		<sonatype-plugin.version>0.9.0</sonatype-plugin.version>
+		<maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+		<maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+		<maven-release-plugin.version>3.3.1</maven-release-plugin.version>
+		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+		<maven-dependency-plugin.version>3.9.0</maven-dependency-plugin.version>
+		<jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+		<maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+		<openapi-generator.version>7.17.0</openapi-generator.version>
 	</properties>
 
 	<dependencyManagement>
@@ -158,7 +158,7 @@
 			<dependency>
 				<groupId>org.openapitools</groupId>
 				<artifactId>jackson-databind-nullable</artifactId>
-				<version>0.2.6</version>
+				<version>0.2.7</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -462,27 +462,6 @@
 					</executions>
 				</plugin>
 				<plugin>
-					<groupId>org.owasp</groupId>
-					<artifactId>dependency-check-maven</artifactId>
-					<version>${owasp-dependency-check.version}</version>
-					<configuration>
-						<failBuildOnCVSS>7</failBuildOnCVSS>
-						<failOnError>false</failOnError>
-						<skipTestScope>true</skipTestScope>
-						<!-- suppressionFiles: see https://jeremylong.github.io/DependencyCheck/general/suppression.html -->
-						<suppressionFiles>
-							<suppressionFile>${maven.multiModuleProjectDirectory}/dependencycheck-suppression.xml</suppressionFile>
-						</suppressionFiles>
-						<nvdApiKey>${NVD_API_KEY}</nvdApiKey>
-					</configuration>
-					<executions>
-						<execution>
-							<!-- run only using explicit command -->
-							<phase>none</phase>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
 					<groupId>org.openapitools</groupId>
 					<artifactId>openapi-generator-maven-plugin</artifactId>
 					<version>${openapi-generator.version}</version>
@@ -492,22 +471,21 @@
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>${build-helper-maven-plugin.version}</version>
 				</plugin>
-
+				<plugin>
+					<groupId>org.sonatype.central</groupId>
+					<artifactId>central-publishing-maven-plugin</artifactId>
+					<version>${sonatype-plugin.version}</version>
+					<extensions>true</extensions>
+					<configuration>
+						<publishingServerId>central</publishingServerId>
+						<autoPublish>true</autoPublish>
+						<waitUntil>published</waitUntil>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<!-- common plugins -->
 		<plugins>
-			<plugin>
-				<groupId>org.owasp</groupId>
-				<artifactId>dependency-check-maven</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
