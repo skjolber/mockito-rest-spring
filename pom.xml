@@ -65,7 +65,7 @@
 
 		<jetty.version>11.0.26</jetty.version>
 		<tomcat.version>10.1.50</tomcat.version>
-		<undertow.version>2.3.20.Final</undertow.version>
+		<undertow.version>2.3.21.Final</undertow.version>
 		<jackson.version>2.20.1</jackson.version>
 		<byte-buddy.version>1.18.3</byte-buddy.version>
 		<swagger-annotations.version>2.2.41</swagger-annotations.version>
