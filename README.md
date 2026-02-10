@@ -221,6 +221,7 @@ You might supplement your testing using the following more low-level mocking pro
 
 # History
 
+ - 2.0.6: Dependency updates
  - 2.0.5: Dependency updates. Spring Boot 3.5.x.
  - 2.0.3: Dependency updates
  - 2.0.2: Dependency updates
