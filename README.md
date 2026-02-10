@@ -130,10 +130,10 @@ where the `MyRestService` is either an interface or a concrete `@RestController`
 private MyRestService myRestService;
 ```
 
-The returned `serviceMock` instance is a normal [Mockito] mock(..) object. 
+The returned `serviceMock` instance is a regular `Mockito.mock(..)` object. 
 
 ### Client configuration
-The mock endpoint is started on a random free local port and saved to  `System` property `mockitoRestSpringServerPort`. 
+The mock endpoint is started on a random free local port and saved to `System` property `mockitoRestSpringServerPort`. 
 
 Configure your client to pick up this value, for example via regular properties in Spring:
 
@@ -169,7 +169,7 @@ or with a `ResponseEntity` wrapper (via OpenAPI `useResponseEntity` parameter):
 when(myRestService.method3(any(MyRequest.class)).thenReturn(new ResponseEntity<>(expected, HttpStatus.OK));
 ```
 
-and apply standard Mockito test approach. 
+and apply standard `Mockito` test approach. 
 
 ## Verifing calls
 After triggering calls to the mock service, verify number of method calls
@@ -189,7 +189,7 @@ assertThat(request.getCode(), is(1));
 ## Mocking GraphQL
 Manually add the API interface
 
-```
+```java
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -210,7 +210,7 @@ public interface MyGraphQLApi {
 }
 ```
 
-and work with String request/response. Match requests using [mockito-graphql-matchers](https://github.com/skjolber/mockito-graphql-matchers) or equivalent.
+and work with `String` request/response. Match requests using [mockito-graphql-matchers](https://github.com/skjolber/mockito-graphql-matchers) or equivalent.
 
 # Alternatives
 You might supplement your testing using the following more low-level mocking projects: 
