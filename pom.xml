@@ -63,12 +63,15 @@
 		<logback.version>1.5.22</logback.version>
 		<slf4j.version>2.0.17</slf4j.version>
 
+		<jakarta-annotation.version>2.1.1</jakarta-annotation.version>
+		<jackson-nullable.version>0.2.9</jackson-nullable.version>
 		<jetty.version>11.0.26</jetty.version>
-		<tomcat.version>10.1.50</tomcat.version>
+		<tomcat.version>10.1.52</tomcat.version>
 		<undertow.version>2.3.21.Final</undertow.version>
-		<jackson.version>2.20.1</jackson.version>
-		<byte-buddy.version>1.18.3</byte-buddy.version>
-		<swagger-annotations.version>2.2.41</swagger-annotations.version>
+		<jackson.version>2.21.0</jackson.version>
+		
+		<byte-buddy.version>1.18.4</byte-buddy.version>
+		<swagger-annotations.version>2.2.42</swagger-annotations.version>
 		<servlet-api.version>6.0.0</servlet-api.version>
 
 		<!-- plugins -->
@@ -83,7 +86,7 @@
 		<maven-dependency-plugin.version>3.9.0</maven-dependency-plugin.version>
 		<jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
 		<maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
-		<openapi-generator.version>7.17.0</openapi-generator.version>
+		<openapi-generator.version>7.19.0</openapi-generator.version>
 	</properties>
 
 	<dependencyManagement>
@@ -158,7 +161,7 @@
 			<dependency>
 				<groupId>org.openapitools</groupId>
 				<artifactId>jackson-databind-nullable</artifactId>
-				<version>0.2.7</version>
+				<version>${jackson-nullable.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -243,7 +246,7 @@
 			<dependency>
 				<groupId>jakarta.annotation</groupId>
 				<artifactId>jakarta.annotation-api</artifactId>
-				<version>2.1.1</version>
+				<version>${jakarta-annotation.version}</version>
 			</dependency>
 			<!-- own dependencies -->
 			<dependency>
