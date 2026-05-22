@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.10</version>
+		<version>3.5.14</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -24,7 +24,7 @@
 		<java.version>17</java.version>
 
 		<swagger-annotations.version>1.6.12</swagger-annotations.version>
-		<openapi-generator.version>7.19.0</openapi-generator.version>
+		<openapi-generator.version>7.22.0</openapi-generator.version>
 
 		<!-- test -->
 		<truth.version>1.4.5</truth.version>
@@ -71,7 +71,7 @@
 		<dependency>
 		    <groupId>com.netflix.graphql.dgs</groupId>
 		    <artifactId>graphql-dgs-client</artifactId>
-		    <version>11.0.0</version>
+		    <version>11.1.0</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.github.skjolber.mockito.graphql</groupId>
@@ -89,7 +89,7 @@
 		<dependency>
 			<groupId>org.openapitools</groupId>
 			<artifactId>jackson-databind-nullable</artifactId>
-			<version>0.2.6</version>
+			<version>0.2.9</version>
 		</dependency>
 		<dependency>
 			<groupId>io.swagger</groupId>
