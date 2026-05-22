@@ -20,6 +20,11 @@ public class DemoService {
 	private PetApi petApi;
 
 	public Pet addPet(String name) throws ApiException {
+		Pet inputPet = createPet(name);
+		return petApi.addPet(inputPet);
+	}
+
+	public Pet createPet(String name) {
 		Pet inputPet = new Pet();
 		inputPet.setName(name);
 		inputPet.setId(3L);
@@ -28,7 +33,7 @@ public class DemoService {
 		c.setId(1L);
 		c.setName("Test");
 		inputPet.setCategory(c);
-		return petApi.addPet(inputPet);
+		return inputPet;
 	}
 	
 }

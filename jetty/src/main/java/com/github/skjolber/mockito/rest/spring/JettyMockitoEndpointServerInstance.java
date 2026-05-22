@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.StatisticsHandler;
 
 public class JettyMockitoEndpointServerInstance implements MockitoEndpointServerInstance {
 
@@ -80,7 +81,14 @@ public class JettyMockitoEndpointServerInstance implements MockitoEndpointServer
 		webAppContext.setParentLoaderPriority(true);
 
 		Server server = new Server(url.getPort());
-		server.setHandler(webAppContext);
+		server.setStopTimeout(10000);
+		server.setStopAtShutdown(true);
+		
+		// make sure connections are closed when stopping the server
+		// TODO this could be improved, it seems sometime clients dont read everything from the server (i.e. on errors) and this causes delays.
+		StatisticsHandler stats = new StatisticsHandler();
+		stats.setHandler(webAppContext);
+		server.setHandler(stats);
 
 		servers.add(server);
 

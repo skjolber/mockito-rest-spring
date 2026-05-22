@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 import com.github.skjolber.mockito.rest.spring.MockitoEndpointExtension;
 import com.github.skjolber.pet.ApiException;
 import com.github.skjolber.pet.model.Pet;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

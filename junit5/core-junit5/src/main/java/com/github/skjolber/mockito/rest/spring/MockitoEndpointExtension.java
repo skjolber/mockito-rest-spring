@@ -158,6 +158,8 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
 			started = true;
 			// Register this resource in the ROOT context's store
 			context.getRoot().getStore(ExtensionContext.Namespace.GLOBAL).put("mockitoEndpoint", this);
+			
+			globalBeforeAll();
 		}
 	}
 
@@ -203,8 +205,15 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
 
 	@Override
 	public void close() throws Exception {
-		System.out.println("Destroying endpoints in the end");
-		server.destroy();
+		globalAfterAll();
+	}
+
+	protected void globalBeforeAll() throws Exception {
+
+	}
+
+	protected void globalAfterAll() {
+	
 	}
 
 }

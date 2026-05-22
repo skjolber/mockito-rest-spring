@@ -12,6 +12,8 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 import io.undertow.Handlers;
 import io.undertow.Undertow;
+import io.undertow.UndertowOptions;
+import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
@@ -28,6 +30,7 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 
 	protected boolean started = true;
 	protected List<Undertow> servers = new ArrayList<>();
+	protected List<GracefulShutdownHandler> handlers = new ArrayList<>();
 
 	/**
 	 * 
@@ -39,14 +42,20 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		synchronized (this) {
 			started = false;
 
+			for (GracefulShutdownHandler gracefulShutdownHandler : handlers) {
+				gracefulShutdownHandler.shutdown();
+				gracefulShutdownHandler.awaitShutdown(10000);
+			}
+
 			for (Undertow server : servers) {
 				server.stop();
 			}
 
+			handlers.clear();
 			servers.clear();
 		}
 	}
-	
+
 	/**
 	 * 
 	 * Stop endpoints.
@@ -57,7 +66,7 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		synchronized (this) {
 			if(started) {
 				started = false;
-	
+
 				for (Undertow server : servers) {
 					server.stop();
 				}
@@ -97,9 +106,6 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		dispatcherContext.addApplicationListener(configuration);
 
 		Undertow undertow = configureUndertow(dispatcherContext, url);
-
-		servers.add(undertow);
-
 		undertow.start();
 
 		return configuration.getAll();
@@ -120,10 +126,24 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		PathHandler path = Handlers.path(Handlers.redirect("/"))
 				.addPrefixPath(CONTEXT_PATH, manager.start());
 
-		return Undertow.builder()
+		final GracefulShutdownHandler gracefulHandler = Handlers.gracefulShutdown(exchange -> {
+			// Disables persistent connections; forces close after response
+			// works around issue where client does not close connection and then crashes on the next request to the same port
+			exchange.setPersistent(false); 
+			path.handleRequest(exchange);
+		});
+
+		Undertow undertow = Undertow.builder()
 				.addHttpListener(url.getPort(), url.getHost())
-				.setHandler(path)
+				.setHandler(gracefulHandler)
+
+				.setHandler(gracefulHandler)
 				.build();
+
+		handlers.add(gracefulHandler);
+		servers.add(undertow);
+
+		return undertow;
 	}
 
 	private static ListenerInfo createContextLoaderListener(WebApplicationContext context) {
