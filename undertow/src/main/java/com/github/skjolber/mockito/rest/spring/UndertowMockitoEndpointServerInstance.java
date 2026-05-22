@@ -136,8 +136,6 @@ public class UndertowMockitoEndpointServerInstance implements MockitoEndpointSer
 		Undertow undertow = Undertow.builder()
 				.addHttpListener(url.getPort(), url.getHost())
 				.setHandler(gracefulHandler)
-
-				.setHandler(gracefulHandler)
 				.build();
 
 		handlers.add(gracefulHandler);
