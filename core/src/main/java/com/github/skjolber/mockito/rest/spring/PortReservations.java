@@ -101,7 +101,9 @@ public class PortReservations {
 				if(reserve(reserved, Integer.parseInt(property))) {
 					return;
 				} else {
-					throw new RuntimeException("Unable to reserve previously set port " + property + " for port name " + propertyName);
+//					throw new RuntimeException("Unable to reserve previously set port " + property + " for port name " + propertyName);
+					reserved.add(Integer.parseInt(property));
+					return;
 				}
 			}
 			// systematically try ports in range

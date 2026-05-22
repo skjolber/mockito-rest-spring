@@ -2,11 +2,12 @@ package com.github.skjolber.mockito.rest.spring;
 
 import java.util.List;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRegistration;
-import org.eclipse.jetty.server.handler.ContextHandler.Context;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler.ServletContextApi;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.web.context.ContextLoaderListener;
@@ -29,7 +30,7 @@ public class JettyMockitoSpringContainerStarter extends AbstractLifeCycle implem
 	}
 
 	public void doStart() {
-		Context container = context.getServletContext();
+		ServletContextApi container = (ServletContextApi) context.getServletContext();
 		container.setExtendedListenerTypes(true);
 
 		// Create the 'root' Spring application context

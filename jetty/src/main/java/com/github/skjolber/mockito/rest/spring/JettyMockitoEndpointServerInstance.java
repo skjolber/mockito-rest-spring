@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
 
 public class JettyMockitoEndpointServerInstance implements MockitoEndpointServerInstance {
 
@@ -76,7 +76,7 @@ public class JettyMockitoEndpointServerInstance implements MockitoEndpointServer
 
 		JettyMockitoSpringConfiguration configuration = new JettyMockitoSpringConfiguration(mockitoSpringConfiguration);
 
-		webAppContext.setConfigurations(new org.eclipse.jetty.webapp.Configuration[] { configuration });
+		webAppContext.setConfigurations(new org.eclipse.jetty.ee10.webapp.Configuration[] { configuration });
 		webAppContext.setParentLoaderPriority(true);
 
 		Server server = new Server(url.getPort());

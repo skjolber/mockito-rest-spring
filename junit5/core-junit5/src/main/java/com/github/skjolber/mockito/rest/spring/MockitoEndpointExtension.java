@@ -24,10 +24,12 @@ import com.github.skjolber.mockito.rest.spring.api.MockEndpoint;
 import com.github.skjolber.mockito.rest.spring.mockito.MockEndpointFieldHelper;
 
 public class MockitoEndpointExtension implements BeforeAllCallback, AfterAllCallback, TestInstancePostProcessor,
-BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback {
+BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback, AutoCloseable {
 
 	private static final String PORT_NAME = "mockitoRestSpringServerPort";
 
+	private static boolean started = false;
+	
 	public static int getPort() {
 		String property = System.getProperty(PORT_NAME);
 		if(property == null) {
@@ -151,6 +153,12 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
 	public void beforeAll(ExtensionContext context) throws Exception {
 		portReservations = new PortReservations(PORT_NAME);
 		portReservations.start();
+		
+		if (!started) {
+			started = true;
+			// Register this resource in the ROOT context's store
+			context.getRoot().getStore(ExtensionContext.Namespace.GLOBAL).put("mockitoEndpoint", this);
+		}
 	}
 
 	/**
@@ -191,6 +199,12 @@ BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExe
 
 	public void start() throws Exception {
 		server.start();
+	}
+
+	@Override
+	public void close() throws Exception {
+		System.out.println("Destroying endpoints in the end");
+		server.destroy();
 	}
 
 }

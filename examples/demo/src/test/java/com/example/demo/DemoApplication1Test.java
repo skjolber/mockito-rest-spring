@@ -82,4 +82,62 @@ public class DemoApplication1Test {
 		assertThat(argument1.getValue().getName()).isEqualTo("request");		
 	}
 
+
+	@Test
+	public void createPetSuccessful2() throws Exception {
+		// setup mocking
+		Pet outputPet = new Pet();
+		outputPet.setId(3L);
+		outputPet.setName("response1");
+		
+		ResponseEntity<Pet> entity = ResponseEntity
+			.ok()
+			.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+			.body(outputPet);
+		
+		when(petApi.addPet(any(Pet.class))).thenReturn(entity);
+		
+		// make the call
+		Pet pet = demoService.addPet("request");
+		
+		// verify result
+		assertThat(pet.getName()).isEqualTo(outputPet.getName());
+		assertThat(pet.getId()).isEqualTo(3L);
+
+		// verify mock called
+		ArgumentCaptor<Pet> argument1 = ArgumentCaptor.forClass(Pet.class);
+		verify(petApi, times(1)).addPet(argument1.capture());
+		
+		assertThat(argument1.getValue().getName()).isEqualTo("request");		
+	}
+
+
+	@Test
+	public void createPetSuccessful3() throws Exception {
+		// setup mocking
+		Pet outputPet = new Pet();
+		outputPet.setId(3L);
+		outputPet.setName("response1");
+		
+		ResponseEntity<Pet> entity = ResponseEntity
+			.ok()
+			.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+			.body(outputPet);
+		
+		when(petApi.addPet(any(Pet.class))).thenReturn(entity);
+		
+		// make the call
+		Pet pet = demoService.addPet("request");
+		
+		// verify result
+		assertThat(pet.getName()).isEqualTo(outputPet.getName());
+		assertThat(pet.getId()).isEqualTo(3L);
+
+		// verify mock called
+		ArgumentCaptor<Pet> argument1 = ArgumentCaptor.forClass(Pet.class);
+		verify(petApi, times(1)).addPet(argument1.capture());
+		
+		assertThat(argument1.getValue().getName()).isEqualTo("request");		
+	}
+
 }
