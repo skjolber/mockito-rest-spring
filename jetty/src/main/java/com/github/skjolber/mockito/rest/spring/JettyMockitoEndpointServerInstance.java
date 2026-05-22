@@ -85,7 +85,7 @@ public class JettyMockitoEndpointServerInstance implements MockitoEndpointServer
 		server.setStopAtShutdown(true);
 		
 		// make sure connections are closed when stopping the server
-		// TODO this could be improved, it seems sometime clients dont read everything from the server (i.e. on errors) and this causes delays.
+		// TODO this could be improved, it seems sometimes clients don't read everything from the server (i.e. on errors) and this causes delays.
 		StatisticsHandler stats = new StatisticsHandler();
 		stats.setHandler(webAppContext);
 		server.setHandler(stats);
