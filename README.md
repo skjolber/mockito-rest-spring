@@ -10,7 +10,7 @@ Users will benefit from
 
   * full-stack __integration-style unit testing__ - over-the-wire mocking on local ports. 
   * [Mockito] support - i.e. full method/type safety
-  * simple setup using [JUnit 5](junit-jupiter) `@Extension`
+  * simple setup using JUnit's `@Extension`
   * Tomcat, Jetty & Undertow support
 
 The target API must be available either in the form of an annotated interface or a concrete implementation at compile time. 
@@ -221,6 +221,7 @@ You might supplement your testing using the following more low-level mocking pro
 
 # History
 
+ - 3.0.0: Dependency updates + better graceful shutdown. Spring Boot 4.0.x.
  - 2.0.6: Dependency updates
  - 2.0.5: Dependency updates. Spring Boot 3.5.x.
  - 2.0.3: Dependency updates
