@@ -66,7 +66,7 @@
 		<jakarta-annotation.version>2.1.1</jakarta-annotation.version>
 		<jackson-nullable.version>0.2.9</jackson-nullable.version>
 		<jetty.version>11.0.26</jetty.version>
-		<tomcat.version>10.1.52</tomcat.version>
+		<tomcat.version>10.1.55</tomcat.version>
 		<undertow.version>2.3.21.Final</undertow.version>
 		<jackson.version>2.21.0</jackson.version>
 		
