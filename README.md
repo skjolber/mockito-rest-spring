@@ -10,7 +10,7 @@ Users will benefit from
 
   * full-stack __integration-style unit testing__ - over-the-wire mocking on local ports. 
   * [Mockito] support - i.e. full method/type safety
-  * simple setup using [JUnit 5](junit5) `@Extension`
+  * simple setup using [JUnit 5](junit-jupiter) `@Extension`
   * Tomcat, Jetty & Undertow support
 
 The target API must be available either in the form of an annotated interface or a concrete implementation at compile time. 
@@ -41,7 +41,7 @@ then add for Tomcat
 ```xml
 <dependency>
     <groupId>com.github.skjolber.mockito-rest-spring</groupId>
-    <artifactId>junit5-tomcat</artifactId>
+    <artifactId>junit-jupiter-tomcat</artifactId>
     <version>${mockito-rest-spring.version}</version>
     <scope>test</scope>
 </dependency>
@@ -51,7 +51,7 @@ or Undertow
 ```xml
 <dependency>
     <groupId>com.github.skjolber.mockito-rest-spring</groupId>
-    <artifactId>junit5-undertow</artifactId>
+    <artifactId>junit-jupiter-undertow</artifactId>
     <version>${mockito-rest-spring.version}</version>
     <scope>test</scope>
 </dependency>
@@ -62,7 +62,7 @@ or Jetty
 ```xml
 <dependency>
     <groupId>com.github.skjolber.mockito-rest-spring</groupId>
-    <artifactId>junit5-jetty</artifactId>
+    <artifactId>junit-jupiter-jetty</artifactId>
     <version>${mockito-rest-spring.version}</version>
     <scope>test</scope>
 </dependency>
@@ -86,20 +86,20 @@ ext {
 add for Tomcat
 
 ```groovy
-api("com.github.skjolber.mockito-rest-spring:junit5-tomcat:${mockitoRestSpringVersion}")
+api("com.github.skjolber.mockito-rest-spring:junit-jupiter-tomcat:${mockitoRestSpringVersion}")
 ```
 
 or Undertow,
 
 ```groovy
-api("com.github.skjolber.mockito-rest-spring:junit5-undertow:${mockitoRestSpringVersion}")
+api("com.github.skjolber.mockito-rest-spring:junit-jupiter-undertow:${mockitoRestSpringVersion}")
 ```
 
 
 or Jetty
 
 ```groovy
-api("com.github.skjolber.mockito-rest-spring:junit5-jetty:${mockitoRestSpringVersion}")
+api("com.github.skjolber.mockito-rest-spring:junit-jupiter-jetty:${mockitoRestSpringVersion}")
 ```
 </details>
 

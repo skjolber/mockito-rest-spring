@@ -8,12 +8,12 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>junit5-parent</artifactId>
-	<name>junit5-parent</name>
+	<artifactId>junit-jupiter-parent</artifactId>
+	<name>junit-jupiter-parent</name>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>core-junit5</module>
+		<module>core-junit-jupiter</module>
 		<module>tomcat</module>
 		<module>jetty</module>
 		<module>undertow</module>
