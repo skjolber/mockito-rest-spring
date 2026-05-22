@@ -3,13 +3,13 @@
 
 	<parent>
 		<groupId>com.github.skjolber.mockito-rest-spring</groupId>
-		<artifactId>junit5-parent</artifactId>
+		<artifactId>junit-jupiter-parent</artifactId>
 		<version>2.0.8-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>core-junit5</artifactId>
-	<name>core-junit5</name>
+	<artifactId>core-junit-jupiter</artifactId>
+	<name>core-junit-jupiter</name>
 	<packaging>jar</packaging>
 
 	<dependencies>

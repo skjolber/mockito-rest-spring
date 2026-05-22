@@ -111,7 +111,7 @@
 		</dependency>
 		<dependency>
 		    <groupId>com.github.skjolber.mockito-rest-spring</groupId>
-		    <artifactId>junit5-tomcat</artifactId>
+		    <artifactId>junit-jupiter-tomcat</artifactId>
 		    <version>${project.version}</version>
 		    <scope>test</scope>
 		</dependency>

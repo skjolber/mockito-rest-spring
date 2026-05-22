@@ -3,22 +3,23 @@
 
 	<parent>
 		<groupId>com.github.skjolber.mockito-rest-spring</groupId>
-		<artifactId>junit5-parent</artifactId>
+		<artifactId>junit-jupiter-parent</artifactId>
 		<version>2.0.8-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>junit5-tomcat</artifactId>
-	<name>junit5-tomcat</name>
+	<artifactId>junit-jupiter-undertow</artifactId>
+	<name>junit-jupiter-undertow</name>
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
-			<artifactId>tomcat</artifactId>
+			<artifactId>undertow</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.github.skjolber.mockito-rest-spring</groupId>
-			<artifactId>core-junit5</artifactId>
+			<artifactId>core-junit-jupiter</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.github.skjolber.mockito-rest-spring</groupId>

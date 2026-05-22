@@ -247,22 +247,22 @@
 			</dependency>
 			<dependency>
 				<groupId>com.github.skjolber.mockito-rest-spring</groupId>
-				<artifactId>core-junit5</artifactId>
+				<artifactId>core-junit-jupiter</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.skjolber.mockito-rest-spring</groupId>
-				<artifactId>junit5-tomcat</artifactId>
+				<artifactId>junit-jupiter-tomcat</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.skjolber.mockito-rest-spring</groupId>
-				<artifactId>junit5-jetty</artifactId>
+				<artifactId>junit-jupiter-jetty</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.skjolber.mockito-rest-spring</groupId>
-				<artifactId>junit5-undertow</artifactId>
+				<artifactId>junit-jupiter-undertow</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -519,7 +519,7 @@
 		<module>jetty</module>
 		<module>tomcat</module>
 		<module>undertow</module>
-		<module>junit5</module>
+		<module>junit-jupiter</module>
 	</modules>
 
 	<profiles>
