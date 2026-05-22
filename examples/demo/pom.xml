@@ -14,14 +14,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.14</version>
+		<version>4.0.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>17</java.version>
+		<java.version>21</java.version>
 
 		<swagger-annotations.version>1.6.12</swagger-annotations.version>
 		<openapi-generator.version>7.22.0</openapi-generator.version>
@@ -29,8 +29,7 @@
 		<!-- test -->
 		<truth.version>1.4.5</truth.version>
 		
-		<junit.jupiter.version>5.12.2</junit.jupiter.version>
-		<junit.platform.version>1.12.2</junit.platform.version>
+		<junit.jupiter.version>6.1.0</junit.jupiter.version>
 		<mockito-rest-spring.version>${project.version}</mockito-rest-spring.version>
 		<test.jvm.argline>-Dio.netty.tryReflectionSetAccessible=false --add-exports
       java.base/jdk.internal.misc=ALL-UNNAMED --enable-native-access=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED
@@ -73,8 +72,12 @@
 		<dependency>
 			<groupId>org.openapitools</groupId>
 			<artifactId>jackson-databind-nullable</artifactId>
-			<version>0.2.6</version>
+			<version>0.2.10</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>		
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-annotations</artifactId>
@@ -96,7 +99,7 @@
 		</dependency>
 		<dependency>
 		    <groupId>com.github.skjolber.mockito-rest-spring</groupId>
-		    <artifactId>junit5-tomcat</artifactId>
+		    <artifactId>junit5-undertow</artifactId>
 		    <version>${project.version}</version>
 		    <scope>test</scope>
 		</dependency>

@@ -51,7 +51,7 @@ public class ExtensionSwaggerGeneratedInterfaceTest {
 		
 		ResponseEntity<Pet> entity = ResponseEntity
 			.ok()
-			.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
+			.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 			.body(outputPet);
 		
 		when((petApi).addPet(ArgumentMatchers.any(Pet.class))).thenReturn(entity);

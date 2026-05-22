@@ -48,31 +48,31 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
 
-		<junit.jupiter.version>5.12.2</junit.jupiter.version>
-		<junit.platform.version>1.12.2</junit.platform.version>
+		<junit.version>6.1.0</junit.version>
 
 		<mockito.version>5.23.0</mockito.version>
 		<hamcrest.version>1.3</hamcrest.version>
 		<commons.io.version>2.22.0</commons.io.version>
 		<truth.version>1.4.5</truth.version>
 
-		<spring.version>6.2.18</spring.version>
+		<spring.version>7.0.7</spring.version>
 		<logback.version>1.5.32</logback.version>
 		<slf4j.version>2.0.18</slf4j.version>
 
-		<jakarta-annotation.version>2.1.1</jakarta-annotation.version>
-		<jackson-nullable.version>0.2.9</jackson-nullable.version>
-		<jetty.version>11.0.26</jetty.version>
-		<tomcat.version>10.1.55</tomcat.version>
-		<undertow.version>2.3.24.Final</undertow.version>
+		<jakarta-annotation.version>3.0.0</jakarta-annotation.version>
+		<jackson-nullable.version>0.2.10</jackson-nullable.version>
+		<jetty.version>12.1.9</jetty.version>
+		<tomcat.version>11.0.22</tomcat.version>
+		<undertow.version>2.4.1.Final</undertow.version>
+		<undertow-servlet.version>2.0.0.Final</undertow-servlet.version>
 		<jackson.version>2.21.3</jackson.version>
 		
 		<byte-buddy.version>1.18.8</byte-buddy.version>
 		<swagger-annotations.version>2.2.50</swagger-annotations.version>
-		<servlet-api.version>6.0.0</servlet-api.version>
+		<servlet-api.version>6.1.0</servlet-api.version>
 
 		<!-- plugins -->
 		<build-helper-maven-plugin.version>1.9.1</build-helper-maven-plugin.version>
@@ -92,26 +92,17 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-engine</artifactId>
-				<version>${junit.jupiter.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-api</artifactId>
-				<version>${junit.jupiter.version}</version>
-			</dependency>			
-			<dependency>
-				<groupId>org.junit.platform</groupId>
-				<artifactId>junit-platform-runner</artifactId>
-				<version>${junit.platform.version}</version>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
 				<version>${mockito.version}</version>
 			</dependency>
-
 			<!-- spring -->
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -235,7 +226,7 @@
 			<dependency>
 				<groupId>jakarta.validation</groupId>
 				<artifactId>jakarta.validation-api</artifactId>
-				<version>3.0.2</version>
+				<version>3.1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>jakarta.servlet</groupId>
@@ -320,16 +311,10 @@
 				<version>${undertow.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>io.undertow</groupId>
-				<artifactId>undertow-servlet</artifactId>
-				<version>${undertow.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>jboss-servlet-api_3.1_spec</artifactId>
-						<groupId>org.jboss.spec.javax.servlet</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+			    <groupId>io.undertow.ee</groupId>
+			    <artifactId>undertow-servlet</artifactId>
+			    <version>${undertow-servlet.version}</version>
+			</dependency>			
 			<dependency>
 				<groupId>org.glassfish</groupId>
 				<artifactId>javax.el</artifactId>

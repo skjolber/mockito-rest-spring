@@ -1,13 +1,14 @@
 package com.github.skjolber.mockito.rest.spring;
 
-import org.eclipse.jetty.webapp.AbstractConfiguration;
-import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
+import org.eclipse.jetty.ee10.webapp.AbstractConfiguration;
 
 public class JettyMockitoSpringConfiguration extends AbstractConfiguration  {
 
 	protected MockitoSpringApplicationListener configuration;
 
 	public JettyMockitoSpringConfiguration(MockitoSpringApplicationListener configuration) {
+		super(new Builder());
 		this.configuration = configuration;
 	}
 

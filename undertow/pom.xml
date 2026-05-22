@@ -21,8 +21,8 @@
 			<artifactId>undertow-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.undertow</groupId>
-			<artifactId>undertow-servlet</artifactId>
+		    <groupId>io.undertow.ee</groupId>
+		    <artifactId>undertow-servlet</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish</groupId>

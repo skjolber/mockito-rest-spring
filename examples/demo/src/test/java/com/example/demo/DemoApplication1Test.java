@@ -81,5 +81,4 @@ public class DemoApplication1Test {
 		
 		assertThat(argument1.getValue().getName()).isEqualTo("request");		
 	}
-
 }
