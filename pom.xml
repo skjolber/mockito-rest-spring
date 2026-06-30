@@ -68,7 +68,7 @@
 		<tomcat.version>11.0.22</tomcat.version>
 		<undertow.version>2.4.1.Final</undertow.version>
 		<undertow-servlet.version>2.0.0.Final</undertow-servlet.version>
-		<jackson.version>2.21.3</jackson.version>
+		<jackson.version>2.22.0</jackson.version>
 		
 		<byte-buddy.version>1.18.8</byte-buddy.version>
 		<swagger-annotations.version>2.2.50</swagger-annotations.version>
