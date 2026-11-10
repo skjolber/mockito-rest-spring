@@ -9,15 +9,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.annotation.AnnotationDescription;
-import net.bytebuddy.dynamic.DynamicType.Loaded;
+import net.bytebuddy.dynamic.DynamicType.Unloaded;
 import net.bytebuddy.dynamic.loading.ByteArrayClassLoader;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
-import net.bytebuddy.dynamic.loading.MultipleParentClassLoader;
+import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 public class MockitoEndpointServiceFactory {
 
 	protected List<Class<?>> beans = new ArrayList<>();
-	protected ClassLoader classLoader = new ByteArrayClassLoader(getClass().getClassLoader(), Collections.emptyMap());
+	// unsealed, so that generated classes can be defined directly via the class loader itself
+	protected ClassLoader classLoader = new ByteArrayClassLoader(getClass().getClassLoader(), false, Collections.emptyMap());
 
 	public <T> Class<T> add(Class<T> serviceClass) throws Exception {
 		return add(serviceClass, null);
@@ -51,9 +52,14 @@ public class MockitoEndpointServiceFactory {
 		if(path != null) {
 			subclass = subclass.annotateType(AnnotationDescription.Builder.ofType(org.springframework.web.bind.annotation.RequestMapping.class).defineArray("path", new String[]{path}).build());
 		}
-		Loaded<T> load = subclass.make().load(classLoader, ClassLoadingStrategy.Default.INJECTION);
-
-		return (Class<T>) load.getLoaded();
+		Unloaded<T> unloaded = subclass.make();
+		if(classLoader instanceof InjectionClassLoader injectionClassLoader && !injectionClassLoader.isSealed()) {
+			// define the class using the class loader's own (protected) defineClass method;
+			// avoids reflective injection, which requires sun.misc.Unsafe and is disabled by Byte Buddy from Java 26
+			return (Class<T>) unloaded.load(injectionClassLoader, InjectionClassLoader.Strategy.INSTANCE).getLoaded();
+		}
+		// custom class loader (i.e. subclass): fall back to reflective injection
+		return (Class<T>) unloaded.load(classLoader, ClassLoadingStrategy.Default.INJECTION).getLoaded();
 	}
 
 	public ClassLoader getClassLoader() {
